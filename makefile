@@ -115,7 +115,7 @@ clean:
 ifndef LINUX
 	$(DELCMD) objects\*.o
 else
-	$(DELCMD) objects/*.o objects/objwrite Xvertigo
+	$(DELCMD) objects/*.o objects/objwrite objects/objects.dat Xvertigo
 endif
 
 cleanall:
