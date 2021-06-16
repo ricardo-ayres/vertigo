@@ -300,7 +300,7 @@ short map_zoom=(mapsize-1)/8;
 cartvektor wind,v_air;
 float wind_direction, wind_speed;
 
-int ground_view=18;
+int ground_view=8;
 
 float meatball_tilt, ldg_aim_offset, desired_ldg_spd, desired_ldg_AOA;
 
