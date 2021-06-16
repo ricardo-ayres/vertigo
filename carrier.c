@@ -1253,7 +1253,7 @@ void LSO_comms()
                break;
 
 
-        default:
+        default: ;
         }
 
 
@@ -1430,7 +1430,7 @@ void update_catapults()
            }
            break;
 
-   default:
+   default: ;
   }
  }
 }

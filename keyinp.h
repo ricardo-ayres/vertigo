@@ -60,7 +60,7 @@ extern float DLC_spoiler;
 extern bool  DLC_active;
 extern bool  auto_throttle;
 extern short viewpoint;
-enum  HUD_modes HUDmode;
+extern enum  HUD_modes HUDmode;
 extern int ntargets;
 extern int selected_target;
 extern target_specs target[maxntargets];

@@ -40,7 +40,7 @@ objwrite.o      : objwrite.c objwrite.h objects.h
 data : objects.dat 
 
 objects.dat : objwrite$(EXE)
-	objwrite$(EXE)
+	./objwrite$(EXE)
 
 clean:
 	$(DELCMD) *.o

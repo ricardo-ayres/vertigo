@@ -1023,7 +1023,7 @@ void main_menu(void) {
   MakeMenuBar();
 	MkMenuBarItem(" Program ~Setup ", program_setup_menu, NULL);
 	MkMenuBarItem(" ~Help ", help_menu, NULL);
-	EndMenu();
+	EndMenuBar();
   AddTag(DOWNLEFT,"");
   SetCguiFont(font_org);
   AddTag(DOWNLEFT,"       VERTIGO");
@@ -1066,11 +1066,11 @@ int main_menu_cgui(bool startup) {
     }
     clear_to_color(screen, 255);
     InitCgui(0, 0, 0);
-    SetCguiColors(1);
+    //SetCguiColors(1);
   }
   else {
     InitCgui(0,0,0);
-    SetCguiColors(0);
+    //SetCguiColors(0);
   }
   font_org = GetCguiFont();
   font_text = (FONT *)find_datafile_object(data, "fnt7x8")->dat;

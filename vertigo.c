@@ -300,7 +300,7 @@ short map_zoom=(mapsize-1)/8;
 cartvektor wind,v_air;
 float wind_direction, wind_speed;
 
-short ground_view=8;
+int ground_view=18;
 
 float meatball_tilt, ldg_aim_offset, desired_ldg_spd, desired_ldg_AOA;
 
@@ -1409,9 +1409,13 @@ int main(int argc, char *argv[])
 {
  int i;
 
+ /* DISABLE SOUND UNTIL FIXED */
+ set_nosound();
+ /*
  for (i=1; i<argc; i++) {
    if (!strcmp(argv[i],"-nosound")) set_nosound();
  }
+ */
 
  init();
 

@@ -18,8 +18,8 @@ ifndef DJGPP
  LINUX  = TRUE
  DEFSYS = -DLINUX=$(LINUX) -D$(GUI)=TRUE
  ifndef ALLEGRO
-  ALLEGRO = $(HOME)/src/allegro-4.0.1
-  CGUIPATH = $(HOME)/src/cgui
+  ALLEGRO = /usr/include
+  CGUIPATH = ../cgui
  endif
 else
  DEFSYS = -D$(GUI)=TRUE
@@ -32,19 +32,19 @@ endif
 CC     = gcc
 
 #High performance 
-OPTFLAGS = -mcpu=pentium -O2 -ffast-math -fomit-frame-pointer
+OPTFLAGS = -O2 -ffast-math -fomit-frame-pointer
 #Development
 #OPTFLAGS = 
 
 WARNFLAGS = -Wall
 
 #Normal compilation
-CFLAGS =
+CFLAGS = -I$(CGUIPATH)/include
 #For symify
 #CFLAGS = -g
 
 #Normal stripped
-LINKFLAGS = -s
+LINKFLAGS = -s -L$(CGUIPATH)/lib/unix -Lobjects
 #For debugging
 #LINKFLAGS =
 
@@ -63,7 +63,7 @@ ifdef DJGPP
    SYS_LIBS    = -lmgui -lgrx20
  endif
  ifeq ($(GUI),CGUI)
-   SYS_LIBS    = $(ALLEGRO)/lib/djgpp/libaldat.a -lcgui 
+   SYS_LIBS    = $(ALLEGRO)/lib/djgpp/libaldat.a
    SYS_OBJECTS = cgmenus.o
    SYS_HEADERS = cgui/cgmenus.h
  endif
@@ -103,13 +103,13 @@ else
    SYS_LIBS    = -lmgui $(ALLEGRO_LIB)
  endif
  ifeq ($(GUI),CGUI)
-   SYS_LIBS    = $(ALLEGRO)/lib/unix/libaldat.a -lcgui $(ALLEGRO_LIB)
+   SYS_LIBS    = $(ALLEGRO_LIB) -l:libcgui_s.a
    SYS_OBJECTS = cgmenus.o
    SYS_HEADERS = cgui/cgmenus.h
  endif
 
  ifeq ($(GRAPHTYPE),X11)
-  LIBG   = $(CGUIPATH)/obj/djgpp/tools/datedit.o $(SYS_LIBS) -lm -L/usr/X11R6/lib -lX11
+  LIBG   = $(CGUIPATH)/obj/unix/cgui/datedit.o $(SYS_LIBS) -lm -L/usr/X11R6/lib -lX11
  else
   LIBG   = /x/home/norup/vertigo/cgui/obj/djgpp/tools/datedit.o -lm -lvga $(SYS_LIBS)
  endif
