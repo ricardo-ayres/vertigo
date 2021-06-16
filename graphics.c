@@ -793,7 +793,7 @@ void draw_poly_map()
  int cos_diag_idx;
  float cos_diag_modif[cos_diag_num];
  for (int i=0; i<cos_diag_num; i++) {
-  cos_diag_modif[i] = 0.1 * i;
+  cos_diag_modif[i] = (float) i / cos_diag_num;
  }
 
  #ifdef TIMESTAT
