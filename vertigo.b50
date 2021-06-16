@@ -1,0 +1,97 @@
+REM ษออออออออออออออออออออออออออออออออออป
+REM บ This file is for the FLCS & TQS  บ
+REM ศออออออออออออออออออออออออออออออออออผ
+
+REM For Vertigo version 0.21
+REM By Anton Norup Sorensen, May 1998
+REM If you improve this setup, consider to send it to me
+REM for distribution with the next Vertigo release.
+
+REM USE WITH NUM LOCK DISENGAGED!
+
+REM ษออออออออออออออออออออป
+REM บ Command Delay Rate บ
+REM ศออออออออออออออออออออผ
+RATE 40
+USE FCLK
+
+USE TQS
+
+Mdef Vertigo
+
+REM ษอออออออออออออออออออออออออออออป
+REM บ FLCS Buttons & Control Hats บ
+REM ศอออออออออออออออออออออออออออออผ
+
+REM BTN S1 activates wheel brakes when depressed
+REM BTN S2 activates both wheel- and airbrakes
+REM S1 is easier to use simultaneously with H1
+BTN S1 /P /N w /R /N w
+
+REM BTN S3 Used to shift mode
+BTN S4 Pause_Game
+
+REM      HAT 1 LARGE Hat, Top Back of FLCS
+REM      For control surface trim and flaps
+BTN H1U /O Trim_Elev_Down
+        /I Flap_Raise
+BTN H1D /O Trim_Elev_Up
+        /I Flap_Lower
+BTN H1L /O Trim_Ailer_Left
+        /I Trim_Rudd_Left
+BTN H1R /O Trim_Ailer_Right
+        /I Trim_Rudd_Right
+
+REM    H2: Small Hat Under BTN S2
+REM        F-14 Direct Lift Control
+BTN H2U DLC_Increase
+BTN H2D DLC_Decrease
+
+REM     HAT 3 Below Large White Hat
+REM     View control
+BTN H3U /O Front_View
+        /I Extern_target_padlock
+BTN H3D /O Rear_View
+        /I LSO_Tow_view
+BTN H3L /O Left_View
+        /I Trail_View
+BTN H3R /O Right_View
+        /I Extern_View
+
+REM     HAT 4 /MEDIUM Size, Left Side of FLCS
+REM     Panning and zooming
+BTN H4U /O Pan_Up
+        /I Zoom_Ext_In
+BTN H4D /O Pan_Down
+        /I Zoom_Ext_Out
+BTN H4L Pan_Left
+BTN H4R Pan_Right
+
+REM      TQS Controls
+
+BTN T1 Snapshot
+BTN T2 /O Show_Map
+       /I Auto_Throttle_On/Off
+BTN T3 /O Hud_On/Off
+       /I Instruments_On/Off
+BTN T4 /O Next_Way
+       /I Next_Tgt
+BTN T5 /O Prev_Way
+       /I Next_Tgt
+BTN T6 /O Gear
+       /I Hook
+BTN T7 /O /P Nav_mode /R A-G_mode
+       /I /P ILS_mode /R A-G_mode
+BTN T8 /P A-A_mode /R A-G_mode
+BTN T9 Retract_Airbrake
+BTN T10 Extend_Airbrake
+
+REM For digital throttle (Not recommended)
+REM @Digital_CON
+REM BTN MT Throttle_Idle
+
+REM RNG used for thrust vectoring in the Harrier
+RNG 1 33 SHF F11 SHF F10
+
+REM ANT reserved for future use
+REM BTN T1 and cursor control reserved for future use

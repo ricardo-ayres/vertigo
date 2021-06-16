@@ -1,0 +1,317 @@
+
+3D-object definition writer for Vertigo, version 0.24.1
+Copyright 2001 Anton Norup Soerensen
+
+Index:
+
+Introduction
+License
+Installation
+Compiling
+Creating your own objects
+Positioning the objects
+Making your objects available to others
+
+
+
+Introduction
+============
+
+This file describes how to create your own 3D-objects for the
+Vertigo flight simulator.
+Making the objects will be quite hard work: You will have to
+enter the coordinates directly into C code, so you will need a
+little previous experience with programming in the C language.
+You will be able to:
+ Modify most of the objects already in the simulator.
+ Create entirely new objects.
+ Specify the location and orientation of most of the objects.
+And when you find out how difficult it is to make objects
+in this way, you might want to make a program to design
+objects, or a program that converts the object format from
+your favourite editor to this format.
+Warning:
+The simulator is under development, so changes in the
+format for specifying objects are likely to occur.
+Therefore, it is probable that you will have to change
+your object-program to stay compatible with new versions
+of the simulator.
+
+
+License
+=======
+The sources for the object writer is distributed under the
+GNU General Public License. Read the 'license.txt' file for
+details.
+In short, you are allowed to modify and re-distribute the
+program and sources, under the restrictions given in the
+license.
+
+
+Installation
+============
+Follow the instructions given in source.txt in the parent directory.
+
+Compiling
+=========
+
+The program that you are about to make, will replace the 'objects.dat'
+file, residing in the 'objects' directory in the 'vertigo' directory.
+Make a back-up of this file, just in case!
+
+With installation complete, run 'make' to create the program
+'objwrite.exe'. This program will make the file 'objects.dat',
+that Vertigo will read.
+
+Don't bother to add optimization options when compiling. It will
+just make compilation slower and may even make the compiler run
+out of memory.
+You will note that the sources are compiled in small chunks, e.g.
+'initobja.c', ... This is to reduce compilation time when small
+changes have been made, and to avoid running out of memory.
+
+If the compiler hangs anyway, try to run 'stubedit' on the 'cc1.exe'
+in the djgpp distribution, and increase the stack size to about
+1024 kilobytes.
+
+
+Creating your own objects
+=========================
+
+Let's examine the program structure:
+The main program objwrite.c sets up an array containing the objects
+and then saves the array to a file.
+The actual set-up is done in the function 'init()', which again
+is a reference to e.g. 'init_objects_a()' in the file 'initobja.c'.
+This file again has some include statements, e.g. '#include "hangar.c"'
+in which the actual assignment is made.
+Looking at 'hangar.c', we find:
+
+ id=HANGAR;
+As defined in 'objects.h', this defines which object we are describing.
+
+ object[id].max_draw_dist=6000;
+This is the largest distance in from which the object is visible.
+This length, and all others, are in meters.
+
+ object[id].always_draw_dist=200;
+Are we closer than this, the object will be drawn even if the 
+center is away from the line of sight. 
+
+ object[id].nvertices =  18;
+The object is defined as a set of vertices, or points, and this is
+the total number of these.
+
+ object[id].nfacets   =  11;
+A set of vertices in a plane defines a polygon, or facet. This
+is the total number of these. 
+
+ object[id].nctrl_srf =   0;
+The number of polygons defining control surfaces. Must be zero 
+for anything but aircraft.
+
+ (object[id].vertex+0)->x=20;
+ (object[id].vertex+0)->y=-30;
+ (object[id].vertex+0)->z=5;
+These are the x,y,z coordinates of the first vertex, number 0.
+
+ (object[id].facet+0)->color=LIGHTGRAY;
+ (object[id].facet+0)->nedges=5;
+ (object[id].facet+0)->edge[0]=0;
+ (object[id].facet+0)->edge[1]=1;
+ (object[id].facet+0)->edge[2]=2;
+ (object[id].facet+0)->edge[3]=3;
+ (object[id].facet+0)->edge[4]=4;
+After all vertices are defined, the polygons can be defined as 
+a sequence of vertices. The example is the first facet (number 0), 
+has the color LIGHTGRAY and consists of a sequence of 5 vertices, 
+number 0 - 1 - 2 - 3 - 4.
+The polygon must be perfectly flat, i.e. all vertices are in
+the same plane. The polygon has two sides, but only one will
+be drawn: Bend the fingers of your right hand slightly, with
+the thumb sticking out. Let the finger tips follow the order of 
+the vertices. The polygon will only be visible from the
+side to which the thumb is pointing.
+
+In other files, a different notation is used, e.g.:
+ facetid->color=LIGHTGRAY;
+ facetid->nedges=4;
+ facetid->edge[0]=106;
+ facetid->edge[1]=105;
+ facetid->edge[2]=109;
+ facetid->edge[3]=110;
+ facetid++;
+This is more compact, but it is harder to keep track of
+the actual number of the facet, which will be needed in
+some cases.
+ 
+ nobjects++;
+Prepare for the next object.
+
+
+For colors, you can choose between the following:
+BLACK
+BLUE
+GREEN
+CYAN
+RED
+LIGHTGRAY
+DARKGRAY
+LIGHTBLUE
+LIGHTCYAN
+LIGHTRED
+WHITE
+DARKGREEN
+For these colors, one of 16 shades will be automatically chosen,
+depending on the orientation of the polygon relative to the light
+source and the strength of the light.
+
+Four more colors are only shaded depending on the strength of the
+light, but not orientation:
+WHITE_SHADE
+YELLOW_SHADE
+GRAY_SHADE
+DARKGRAY_SHADE
+
+You can specify a fixed color, independent of illumination, by
+specifying a negative number, e.g. color=-RED, among one of the
+following:
+BLACK
+BLUE
+GREEN
+CYAN
+RED
+MAGENTA
+BROWN
+LIGHTGRAY
+DARKGRAY
+LIGHTBLUE
+LIGHTGREEN
+LIGHTCYAN
+LIGHTRED
+LIGHTMAGENTA
+YELLOW
+WHITE
+
+This should suffice for making a simple object. Making aircraft
+with moving surfaces is a bit more tricky.
+
+Let's look at a part of the file 'f104.c':
+
+ object[id].nfacets   =  94; /* Excluding control surface polys */
+ object[id].nctrl_srf =  13;
+Here there are 94 ordinary polygons and 13 moving parts, each 
+usually consisting of several polygons, not counted among the
+ordinary ones.
+
+The first (number 0) moving part is defined as this:
+ object[id].ctrl_surface[0].hinge.x      =  -6.40;
+ object[id].ctrl_surface[0].hinge.y      =   0;
+ object[id].ctrl_surface[0].hinge.z      =   2.34;
+The axis of rotation goes through the point above.
+
+ object[id].ctrl_surface[0].rudder_gain  =   0;
+ object[id].ctrl_surface[0].aileron_gain =   0;
+ object[id].ctrl_surface[0].elevator_gain=   1;
+ object[id].ctrl_surface[0].flap_gain    =   0;
+ object[id].ctrl_surface[0].brake_gain   =   0;
+ object[id].ctrl_surface[0].gear_gain    =   0;
+ object[id].ctrl_surface[0].gear_id      =  -1;
+This surface is apparently the elevator. The gain can
+also be different from 1, if the motion amplitude should
+be adjusted. The gear id of -1 means that this is not 
+a part of the undercarriage. Typically, id=0 would be
+the nose wheel, and id=1 or 2 would be the main gear.
+
+ object[id].ctrl_surface[0].nctrlpoly    =   4;
+ object[id].ctrl_surface[0].poly_id[0]   =  94;
+ object[id].ctrl_surface[0].poly_id[1]   =  95;
+ object[id].ctrl_surface[0].poly_id[2]   =  96;
+ object[id].ctrl_surface[0].poly_id[3]   =  97;
+The surface consists of 4 polygons, number 94 to 97.
+
+Near the bottom of the file, we find:
+ /* Define control surface rotation axis */
+ object[id].ctrl_surface[0].axis =
+   vminus(*(object[id].vertex+43),*(object[id].vertex+41));
+The line between the two vertices, number 43 and 41, defines
+the orientation of the rotation axis for the moving part.
+
+
+In 'objects.h', you will find:
+
+#define maxnedges     8
+This is the maximum number of sides in a polygon.
+#define maxnobjects  20
+This is the number of different 3D objects.
+#define maxnctrlsrf  17
+The maximum number of moving parts on a single object.
+#define maxctrlpoly   6
+The maximum number of polygons in a moving part.
+
+#define maxnposobj  100
+The maximum number of entries in the 'objects.pos' file.
+
+There are three object id's reserved for your extensions:
+ADDON1, ADDON2 and ADDON3, and these should be created by
+editing the files 'addon1.c' etc.
+
+You can also choose to modify the existing objects, but
+you should avoid changing the F14 and WINDBAG objects, as 
+some of their vertices are modified by the simulator, and 
+you should note that changing the runway will not move the 
+runway lights.
+
+
+Positioning the objects
+=======================
+
+The file 'objects.pos' in the 'objects' directory specifies
+the location of some of the objects in the simulation.
+
+Examining the file, you will see that the position of the
+runway, it's markings and four hangars are defined.
+
+Each line consists of six numbers.
+The first number is the object id, as specified in 'objects.h'.
+The next three numbers are the X, Y and Z coordinates of the
+object. The scale is in meters. The Z / height coordinate is relative
+to the local ground altitude.
+The fourth number is the rotation angle about the vertical axis.
+There is a slight performance gain if this angle is zero.
+The last number is normally 0, but can in special cases be set to 1.
+This will force drawing the defined object immediately. Normally, the
+polygons are placed in a Z-buffer that will make the most distant
+polygons be drawn first, making distant objects hiding behind nearer
+ones. This can be overridden as in the case of the runway and markings
+in the current file, to make sure the markings are drawn on top of the
+runway.
+The objects are drawn in the sequence in which they appear in the
+positioning file.
+
+If a line starts with the # character, the line will be ignored.
+Empty lines are also ignored.
+
+
+Making your objects available to others
+=======================================
+
+You can do whatever you like with the objects you create, as long
+as the GNU General Public License is obeyed. You can keep them
+for your own entertainment, or share them with others. You may
+distribute them from your own site on the net, or you may send
+them to me, to be included in the next release of the simulator.
+Note that I alone decide which objects are part of the official
+distribution. I have no obligation to include contributed 
+objects. So if you plan to spend a lot of time designing something,
+it might be wise to ask me if I find it interesting.
+If your object is included, you will of course be credited in
+the documentation and sources.
+
+
+Have fun,
+Anton Norup Soerensen
+norup@astro.ku.dk
+http://www.astro.ku.dk/~norup/
+
+

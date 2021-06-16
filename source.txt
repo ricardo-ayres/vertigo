@@ -1,0 +1,209 @@
+Source code for the "Vertigo" flight simulator.
+
+Introduction
+License
+Installation
+Compiling and modifying the code
+Making your modified simulator available to others
+
+
+
+Introduction
+============
+This document describes how to compile and make modifications to the 
+Vertigo flight simulator, using the distributed source code.
+Originally, it was never thought of that any of the code might be released. 
+Consequently, little effort has been put into making the code readable and 
+documented. There are few comments in the code, and many of them are in Danish!
+As the simulator is continuously evolving, you should be warned that for every
+new release, you will probably have to spend a little time making your work 
+compatible with the new version.
+
+
+License
+=======
+The source code is distributed under the GNU General Public License. 
+Read the 'license' file for details.
+In short, you are allowed to modify and re-distribute the program and sources,
+under the restrictions given in the license.
+
+
+
+Installation
+============
+
+DOS/Windows:
+------------
+
+Unpack the src####.zip into a directory, and make sure that subdirectories
+are created. If you are using pkunzip, this reqires the -d option. Most 
+programs does this automatically.
+
+Install the 'djgpp' compiler. It can be downloaded from: 
+http://www.delorie.com
+Several add-on's can be fetched from this site, but you only
+need the fundamental files for developing C-programs.
+In September 2001, these files were:
+
+v2/copying.dj              DJGPP Copyright info                  3 kb
+v2/djdev203.zip            DJGPP Basic Development Kit         1.5 mb
+v2/faq230b.zip             Frequently Asked Questions          664 kb
+v2/readme.1st              Installation instructions            20 kb
+v2gnu/bnu2112b.zip         Basic assembler, linker             2.6 mb
+v2gnu/fil40s.zip           File Utils (for building Allegro)   1.4 mb
+v2gnu/gcc2953b.zip         Basic GCC compiler                  1.9 mb
+v2gnu/gdb500b.zip          GNU debugger                        1.1 mb
+v2gnu/mak3791b.zip         Make (processes makefiles)          263 kb
+v2gnu/txi40b.zip           Info file viewer                    632 kb
+
+But check a more recent document at the djgpp site for which
+files to download.
+
+Install the Allegro library. It can be downloaded from:
+http://www.talula.demon.co.uk/allegro/
+Version 4.0.1 of Allegro was used for this distribution.
+
+Install the CGUI graphical user interface by Christer Sandberg. Get it at:
+http://www.idt.mdh.se/~csg/cgui/
+Version 1.4 was used, but a bug-fix is required:
+
+Cut line 147 from winreq.c:
+   ExecuteAllPendingEvents();
+and paste it as line 78 in cguiinit.c (after the call to GenEvent)
+If you don't want the compiler to complain, also move the include line
+#include "event.h"
+and it will work. 
+
+These packages all have their own installation instructions.
+Please direct questions regarding installation to the authors or
+the newsgroup comp.os.msdos.djgpp
+But please read at least the djgpp FAQ first. It is at
+http://www.delorie.com/djgpp/v2faq/faq.html
+
+Please do not ask me about installing djgpp and it's libraries - I am not well
+qualified to answer your questions, and would rather concentrate on other matters.
+
+Compiling Vertigo:
+Edit "makedefs" to set the paths to your Allegro and CGUI installations.
+Then create the program by running "make".
+
+Linux:
+------
+First install the Allegro ad CGUI libraries as mentioned above.
+See the description at the end of this file of how to make CGUI 1.4 compile 
+on Linux. This should be easier from version 1.5 and onwards.
+
+Unpack the archive using the command "unzip -La src####.zip".
+These options will convert filenames to lower case and convert text file 
+carriage returns to unix standards.
+Vertigo can be compiled with gcc, included with Linux.
+Edit "makedefs" to set the paths to your Allegro and CGUI installations.
+Also specify whether you want X11 or console graphics, and whether linking 
+should be static or dynamic. 
+Then create the program by running "make". 
+Joystick control is not supported in the Linux version.
+
+
+Compiling and modifying the code
+================================
+
+With the libraries correctly installed and tested, you should be able to
+re-compile the simulator.
+
+For an easy start, you might want to enter the "airplane" directory,
+where the flight model parameters for the individual aircraft are defined.
+Read the "airplane.txt" file on how to modify the existing aircraft, or
+add new ones.
+The only other thing that is described in detail is how to change the 
+graphic objects. Read the "objects/objects.txt" on how to do that.
+Depending on the amount of interest in making modifications, I will try
+to make the relevant sections of the code better documented, and facilitate
+the changes you want to make.
+
+
+Making your modified simulator available to others
+==================================================
+
+You can do whatever you like with the modified simulator, as long
+as the GNU General Public License and the licences for the libraries
+used is obeyed.
+You can keep it for your own entertainment, or share it with others.
+
+Making independent distributions
+--------------------------------
+Feel free to publish any modification of the simulation that you have
+made, but:
+I expect to be credited in any independent distributions of the
+simulator, and I expect you to inform people where to get the original
+simulator. 
+If you are going to sell a modification of the free(!) simulator, I 
+will most likely not sue you, but I sure will be offended.
+
+Contributing to the "official" Vertigo
+--------------------------------------
+You may send your work to me, to be included in the next release of 
+the simulator.
+Note that I alone decide which modifications are part of the official
+distribution. I have no obligation to include contributed 
+work. So if you plan to spend a lot of time designing something,
+it might be wise to ask me if I find it interesting.
+If your work is included, you will of course be credited in
+the documentation and sources.
+
+
+Have fun,
+Anton Norup Soerensen
+a_norup@post.tele.dk
+
+
+-----------------------------------------------
+
+CGUI 1.4 modification for compiling on Linux - a crude description:
+
+unzip -La cguis14.zip
+cd cgui
+
+cp depgen.dj depgen.mak
+cp platform.dj platform.mak
+- most of the contents of these files is currently not used, but at least
+the djgpp environment is selected.
+Edit platform.mak and tell where Allegro can be found
+ALLEGRO = $(HOME)/allegro-4.0.1
+
+cd $(ALLEGRO)/lib
+cp unix/* djgpp/
+- this hack is required as the makefile assumes that the PLATFORM=djgpp
+directory is used in Allegro, but it is the unix directory
+
+In makefile, change:
+  LIBS = -lalleg -> LIBS = `allegro-config --libs`
+
+In all path definitions "\" must be replaced by "/". 
+
+tools/header.c imed.c lang.c mktext.c
+ Remove "#include <dir.h>"
+
+tools/ilang.c isec.c mktext.c files.c loadtext.c
+ Replace:
+  stricmp -> strcasecmp
+  strnicmp -> strncasecmp
+
+tools/mktext.exe is created, but makefile calls it as mktext
+Solved by rename
+
+src/cguiinit.c
+ Remove "#include <conio.h>"
+
+cguiinit.c: //Use allegro in stead of DOS console command
+#define getch() readkey()
+
+Uncomment the lines causing these errors:
+lib/djgpp/libcgui.a(files.o): In function `JustifyPath':
+files.o(.text+0x123d): undefined reference to `GetDiskIndex'
+lib/djgpp/libcgui.a(filebrow.o): In function `DestroyBrowseObject':
+filebrow.o(.text+0xd02): undefined reference to `DestroyDisklist'
+lib/djgpp/libcgui.a(filebrow.o): In function `LoadDisplyListWrapper':
+filebrow.o(.text+0x2908): undefined reference to `GetDiskIndex'
+lib/djgpp/libcgui.a(filebrow.o): In function `GenericFileBrowser':
+filebrow.o(.text+0x38eb): undefined reference to `GetDiskIndex'
+

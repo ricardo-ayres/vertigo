@@ -1,0 +1,442 @@
+
+How to define airplane flight model parameters
+==============================================
+
+In this text, it is assumed that you have successfully installed the source code and compiler, as described in "source.txt", and that you are able to build a new executeable using these.
+Here I will try to explain how to modify the flight model parameters of the existing aircraft, or
+how to add the flight model parameters for a new aircraft.
+For adding/modifying the graphics of an aircraft, see "objects.txt" instead.
+
+The flight model parameters for each aircraft are placed in seperate files in the "airplane" directory.
+The structures containing the parameters are all defined in "vertigo.h"
+
+Adding a new aircraft:
+You should consider to start by modifying an existing aircraft, before adding a completely new model.
+If you want to avoid editing vertigo.c, you can just replace one of the existing aircraft with your
+model. 
+You should not replace the file of the F-14, as this model have features that are specified elsewhere
+than the parameter file, and you risk that these features will affect your new model adversely. Generally, do not use the F-14 as a reference for creating new aircraft, as it is non-standard in several ways.
+
+To add another model, not replacing one, you will (at least) have to edit the following lines: 
+
+Vertigo.h
+#define nmodels 9
+
+Vertigo.c
+int  poly_plane_id[nmodels]={T17,CORSAIR,U2,F104,HARRIER,F14,T17,X15,LM}; /* link polygon model to aircraft */
+int  cockpit_id[nmodels]={T17_CP,CORSAIR_CP,U2_CP,F104_CP,HARRIER_CP,F14_CP,T17_CP,F104_CP,HARRIER_CP};
+
+Let us examine the parameter file "t17.c" for the Saab MFI-17 as an example of how to create an aircraft. To add to the confusion, we will later on use code from other aircraft to illustrate other
+aspects. The explanations are many places very rudimentary. Ask me, where there is need for
+clarification.
+
+strcpy(modelname,"SAAB MFI-17 Supporter");
+
+Simply replace this string with the name of your aircraft.
+
+Now an array of aerodynamic elements follows. Certain element ID's link to the control surfaces,
+so you must assign the proper airframe sections to these:
+
+As specified in vertigo.h:
+#define elevatorid 1     /* Common to ALL models, except F-14 */
+#define rudderid 2
+#define stbflapid 3
+#define portflapid 4
+#define stbaileronid 5
+#define portaileronid 6
+
+Let's examine element #1, which is affected by the elevator, as defined above. I.e. this element should be the tail plane.
+
+First, the weight if the element, in kilograms:
+element[1].weight=20;
+
+The location of the centre of gravity of the element is specified by:
+element[1].front.masscenter=-4.1;
+element[1].left.masscenter = 0;
+element[1].top.masscenter  = 1.12;
+All units of length are in metres. The origin is in principle arbitrary,
+but i prefer to use the approximate centre of gravity of the 
+aircraft.
+"front" is the fore-aft direction, with positive values pointing forward.
+"left" is the sideways direction. Positive is to starboard, or right when looking forward - beware of
+the confusing sign convention.
+"top" is the vertical direction, with positive upwards.
+So, in in this case, the tail plane is placed far to the rear, somewhat high and not 
+displaced to any of the sides.
+
+In the same way, the center of lift (and induced drag) is defined by:
+element[1].front.liftcenter=-4.0;
+element[1].left.liftcenter = 0;
+element[1].top.liftcenter  = 1.12;
+
+The center of profile drag is given by:
+element[1].front.dragcenter=-4.0;
+element[1].left.dragcenter = 0;
+element[1].top.dragcenter  = 1.12;
+
+The area of the surface in the three directions is given by:
+element[1].front.area=0.05*2.85;
+element[1].left.area=0;
+element[1].top.area=2.85*0.80;
+The "top" area is by far the largest, as could be expected from a tail plane.
+The smaller front area is important for calculating profile drag, and in this case,
+the side area is considered so small it is set to zero.
+
+The drag coefficient for each direction is defined:
+element[1].front.dragcoeff= 0.1;
+element[1].left.dragcoeff = 0.1;
+element[1].top.dragcoeff  = 0.6;
+The value must be between 0 and 1.
+Being a streamlined flat plate, the tail plane has a low drag coefficient in the front
+direction, and a huge one vertically.
+
+The aspect ratio says how slim or elongated that particular surface is.
+element[1].front.aspect=25;
+element[1].left.aspect=10;
+element[1].top.aspect=3.6;
+A large aspect ratio (e.g. glider wing) makes lift rise rapidly with angle of attack,
+reduces induced drag and lowers the stalling angle, and vice versa for small aspect 
+ratios (e.g. fighter wing).
+
+The elements described are all oriented along the axes of the coordiante system.
+A small angular offset can be defined by the "deflect" element. The unit is degrees.
+element[1].front.deflect=0;
+element[1].left.deflect =0;
+element[1].top.deflect  =0;
+
+The profile of a wing is usually curved to make it a better generator of lift.
+element[1].topcurvature =0;
+A value of 0 means a symmetric wing, while a low speed, high lift might have a curvature
+of up to 5.
+
+The "oswald" parameter describes how good the surface is a generating lift without 
+creating induced drag. A poor wing might have a value of 0.1, and a good one about 1.
+element[1].top.oswald   =0.7;
+
+Note that there is a "general-orientation airfoil" too, in stead of the crude model
+above - but it is not in a useable state.
+
+
+Undercarriage:
+Let's look at the nose wheel of the F-104.
+The steerable wheel must always have index 0. 
+
+It's weight:
+gear[0].weight=150;
+
+It is attached to the body at:
+gear[0].hingepos.x=3.8;
+gear[0].hingepos.y=0;
+gear[0].hingepos.z=-0.6;
+
+Now, suddenly x,y,z coordinates are used in stead of front, left, top! 
+Note that the y-sign is the opposite of the sign of the "left" coordinate.
+
+The length of the gear is the sum of the leg and the oleo strut:
+gear[0].length=0.5;
+gear[0].stroke=0.25;
+
+And on top of that, there is the radius of the wheel:
+gear[0].wheel_radius=0.19;
+
+This is fraction the retracting/extending gear is moving in one second.
+Set to zero for a fixed gear.
+gear[0].downrate=0.2;
+
+As mentioned only gear[0] can be steered. This is the senstivity of the
+steering.
+gear[0].steergain=0.5;
+
+The gear acts as a spring on contact with the ground.
+The strength is given in Newtons per meter.
+gear[0].spring=200000.;
+
+The oleo strut is damped to avoid bouncing. A value of 0 is no damping,
+and a value of 1 is extremely high damping.
+gear[0].damping=0.10;
+
+This nosewheel has no brakes. Set to 0.5 for standard effectiveness of brakes.
+gear[0].brakeeffect=0;
+
+The front area for calculating frag:
+gear[0].area=0.2*1.0;
+
+The profile frag coefficient. Typically close to 1 for a draggy thing as this.
+gear[0].dragcoeff=1.0;
+
+Then there is the angular inertia of the wheel. The value "4" in this equation
+should be replaced by the weight in kilos of the wheel.
+gear[0].wheel_moment=0.5*4*SQR(0.66*gear[0].wheel_radius);
+
+With the skid false, the gear behaves as equipped with a wheel. Setting it true
+will cause it to behave like a skid point, scraping the ground with high friction.
+gear[3].skid=false;
+
+The elements below must be set to the values shown:
+gear[0].down=1;
+gear[0].steer=0;
+gear[0].wheel_omega=0;
+gear[0].strokepos=0.;
+
+The rest of the gear is filled in similarly.
+Also points of the airframe that can scrape against the ground can be defined:
+Most of the values are dummies - the important ones are "hingepos" describing
+the location on the body, and "spring", describing the stiffnes of the point.
+
+gear[3].weight=0;
+gear[3].hingepos.x=-6.8;
+gear[3].hingepos.y=0;
+gear[3].hingepos.z=-0.2;
+gear[3].length=0;
+gear[3].stroke=0;
+gear[3].strokepos=0.;
+gear[3].damping=0.1;
+gear[3].down=1;
+gear[3].downrate=0;
+gear[3].steergain=0;
+gear[3].brakeeffect=1;
+gear[3].area=0;
+gear[3].dragcoeff=0;
+gear[3].spring=300000.; /* newton per meter */
+gear[3].steer=0;
+gear[3].skid=false;
+
+
+The arresting hook:
+
+Whether the aircraft has a hook or not:
+hook.exists     = true;
+
+The attachment point on the body:
+hook.hingepos.x = -2.8;
+hook.hingepos.y =  0;
+hook.hingepos.z = -0.70;
+
+The length of the bar between hook and body:
+hook.length     =  1.50;
+
+Default position - do not change.
+hook.down       =  0;
+
+How much of the up/down movement is accomplished in one second: 
+hook.downrate   =  0.5;
+
+How many G's is the aircraft de-accelerated by when trapping:
+hook.deaccel    =  3.5;
+
+
+Machine guns:
+
+The location of the gun:
+gun[0].pos.x=0.78;
+gun[0].pos.y=2.38;
+gun[0].pos.z=-0.70;
+
+The direction of aiming, described by a unit vector.
+This example is one of the guns from the Corsair, where the guns point slightly inwards.
+gun[0].aim.x=1;
+gun[0].aim.y=-.009;
+gun[0].aim.z=0;
+
+Some fairly self-describing data:
+gun[0].nrounds=400;
+gun[0].muzzle_vel=856; /* meter/sec */
+gun[0].fire_rate=13.2; /* per second */
+gun[0].projectile_mass=0.044; /* kg */
+gun[0].recoil=100;      /* Newton/sec */
+
+Default value:
+gun[0].t_last_shot=0;
+
+How many of the rounds are tracers. "1" for all, "2" for every other etc.
+gun[0].tracer_freq=2;
+
+
+Air brake:
+
+The area is given in square meters. Set to 0 if there is none.
+airbrake.area      = 1.0;
+
+The drag coefficient is typically 0.5 to 1.0
+airbrake.dragcoeff = 1.0;
+
+Default position in.
+airbrake.out       = 0;
+
+Fractional movement per second:
+airbrake.outrate   = 1.0;
+
+Position on airframe:
+airbrake.pos.x     =-4.0;
+airbrake.pos.y     = 0.0;
+airbrake.pos.z     = 0.1;
+
+
+Fuel tanks:
+
+The tanks are specified by their location and capacity in liters.
+There MUST be an even number of tanks!
+fueltank[0].pos.x    = 2.60;
+fueltank[0].pos.y    = 0.00;
+fueltank[0].pos.z    = 0.35;
+fueltank[0].capacity =  963;  /* Liter */
+
+
+Flaps and slats:
+These are always element 3 and 4, as mentioned above.
+
+Movement rate. Full deflection assumed to be 35 degrees.
+flapresponse=5; /* deg/sec */
+
+The centre of lift travel in the forward direction at full flap deflection:
+flap_cp_travel = -1.0;
+
+Approximate increase of stall angle in arbitrary units by slat extension.
+Typically 0 to 1.
+slat_eff = 0;
+
+The number of various components:
+These are extremely important to get right, or the program will crash.
+
+General orientation airfoil - you should not use it, so leave it at zero.
+ nwingsections = 0;
+The traditional airframe elements:
+ nelements     = 8;
+Numer of each type of engines:
+ njetengines   = 1;
+ npropengines  = 0;
+ nrocketengines= 0;
+Number of gears and hardpoints. Note that these are both defined in the gear[] array.
+ ngears        = 3;
+ nhardpts      = 5;
+Number of guns:
+ nguns         = 1;
+Number of fuel tanks. Must be an even number.
+ nfueltanks    = 4;
+
+The location of the pilot's head, i.e. viewpoint in relation to the airframe:
+ pilotpos.x=5.84;
+ pilotpos.y=0;
+ pilotpos.z=0.83;
+
+Whether the HUD should be shown by default for this aricraft:
+ show_hud=true;
+
+The desired landing speed. Almost not used in the program anymore.
+Define a good AOA in stead.
+ desired_ldg_spd = 160; /* 170 */  /* KTS */
+
+The ideal angle of attack when on the glide slope for carrier landings.
+ desired_ldg_AOA = 9.0;   /* degrees */
+
+Individual aircraft set-up for the meat-ball:
+ ldg_aim_offset  =  -1.1; /* meters */
+ meatball_tilt   = ldg_aim_offset/24.4; /* Distance to meatball */
+
+The maximum movement rate of the control surfaces:
+ controls.elevatorrate = 120; /* degrees/sec */
+ controls.aileronrate  = 120;
+ controls.rudderrate   = 120;
+
+The angle where the stall warning will sound. Here 15 degrees:
+ stall_angle = 15.0*(PI/180);
+
+The sensitivity of the controls around each axis:
+ elevator_gain = 0.5;
+ aileron_gain  = 0.6;
+ rudder_gain   = 0.7;
+
+The indicated airspeed above which the control effectivenes will gradually decrease:
+ elevator_vmax = 500; /* KTS */
+ aileron_vmax  = 500; /* KTS */
+ rudder_vmax   = 500; /* KTS */
+
+Parameters determining the looks of the head-down instruments:
+ instrum.max_vv = 5000; /* ft/min */
+ instrum.min_ias  =   30; /* kts */
+ instrum.max_ias  =  700; /* kts */
+ instrum.max_fuel_flow = 3000; /* gal/hr */
+
+Supersonic drag coefficient in three directions:
+ front_superdrag = 0.8;
+ left_superdrag  = 5.0;
+ top_superdrag   = 5.0;
+
+
+At last, let us look at each type of engine:
+
+Jet-engine:
+Mass and thrust origins in same point.
+For non-vectoring engines, thrust is always in the negative x-direction.
+ jengine[0].weight=1800;            
+ jengine[0].front.masscenter=-4.17;
+ jengine[0].left.masscenter=0;
+ jengine[0].top.masscenter=0.2;
+
+Sensible start-up values. Do not change:
+ jengine[0].throttle=0; /* % */
+ jengine[0].rpm=0;        /* % */
+ jengine[0].fflw         =     0;
+ jengine[0].ab_status  =0;
+ jengine[0].ignition        =  true;
+ jengine[0].compressor_stall=  false;
+ jengine[0].egt=500;
+
+A non-vectoring engine would be defined like this:
+The limits are in degrees and the response in degrees per second.
+ jengine[0].vectoruplim=0;
+ jengine[0].vectordnlim=0;
+ jengine[0].vectorpos=0;
+ jengine[0].vectordesire=0;
+ jengine[0].vectorresponse=0;
+
+Fuel flow, afterburner and thrust specifications:
+ jengine[0].rpm_response =     5; /* %/sec */
+ jengine[0].ab_response  =     1.5; /* stages / sec */
+ jengine[0].idle_rpm     =    65; /* % */
+ jengine[0].idle_thrust  =  1000; /* Newton */
+ jengine[0].mil_thrust   = 44400; /* Newton  = 10000 pounds */
+ jengine[0].ab_stg_thrust=  8306; /* Newton  / AB stage */
+ jengine[0].n_abstages   =     3;
+ jengine[0].idle_fflow   =     0.126; /* kg/sec = 1000 lbs/h */
+ jengine[0].mil_fflow    =     0.605; /* kg/sec = 4800 lbs/h */
+ jengine[0].ab_stg_fflow =     1.109; /* kg/sec = 8800 lbs/stage/h */
+
+The pitch and yaw angles outside which you risk a compressor stall:
+ jengine[0].stall_pitchup   = 30;
+ jengine[0].stall_pitchdown = 30;
+ jengine[0].stall_yawleft   = 20;
+ jengine[0].stall_yawright  = 20;
+
+The maximum inlet mach number.
+ jengine[0].inlet_ramp_m0   =  2.5;
+The ramp sensitivity on mach number:
+ jengine[0].inlet_ramp_slope=  1;
+
+ /* Simple model */
+ jengine[0].response=20;  /* %/sec */
+ jengine[0].power=69400.;   /* Newton = 7076 kg full A/B*/
+
+
+
+Propeller engine:
+This one is a bit tricky - Ask me if you need the docs, and I will try to write some.
+
+
+
+The rocket engine is very simple:
+Thrust is always in the X-direction, and is given in Newtons.
+The fuel flow at 100% thrust is given in liters per second.
+
+ /* Rocket engine */
+ /* Mass and thrust origins in same point */
+ rengine[0].weight=1600;
+ rengine[0].front.masscenter=-4.3;
+ rengine[0].left.masscenter = 0;
+ rengine[0].top.masscenter  = 0;
+ rengine[0].throttle=0; /* % */
+ rengine[0].max_thrust = 257424.; // N = 57,850 lbs
+ rengine[0].max_fuelflow = 160.0; // 67.5 sec burn time - best fit to performance // liter/sec
+ rengine[0].ignition = true;
+
+

@@ -1,0 +1,117 @@
+				 Vertigo
+                        Version 0.26, April 2002
+
+			   Controls reference
+			   ==================
+This is also available from the menu in the program.
+See VERTIGO.TXT or VER_DOCS.HTM for more information.
+
+Throttle control:
+F1    Idle
+F2    Decrease throttle 5%               SHIFT F2    Decrease throttle 1%
+F3    Increase throttle 5%               SHIFT F3    Increase throttle 1%
+F4    Full throttle
+
+Propeller RPM setting:
+CTRL F1   Low RPM
+CTRL F2   Decrease RPM
+CTRL F3   Increase RPM
+CTRL F4   High RPM
+
+Flap settings:
+F5    Neutralize flaps
+F6    Flaps 1/3 down
+F7    Flaps 2/3 down
+F8    Flaps fully down
+
+Vector thrust nozzle (Harrier only): 
+F9    Nozzle fully up
+F10   Raise nozzle 15 deg.               SHIFT F10   Raise nozzle 1 deg.
+F11   Lower nozzle 15 deg.               SHIFT F11   Lower nozzle 1 deg.
+F12   Nozzle fully down
+
+Manual wing sweep control (F-14 only):
+F9    Minimum sweep, 20 deg.
+F10   Decrease sweep by 5 deg.               
+F11   Increase sweep by 5 deg.               
+F12   Maximum sweep, 68 deg.
+s     Toggle auto/manual sweep
+
+r     Toggle Reaction Control System (X-15 only)
+
+Elevator trim:
+SHIFT arrow up / down 
+
+Rudder  trim:
+ALT   arrow left / right
+
+Aileron trim:
+SHIFT arrow left / right
+
+g     Landing gear up/down
+h     Arrestor hook up/down
+
+z / x / c               Left / center / right rudder
+
+Tomcat and Lunar Module only:
+t                       Toggle auto-throttle
+
+Tomcat only:
+q / a                   Decrease / Increase spoiler deflection (DLC)
+
+Button #1               Fire cannon
+
+F			Initiate engine failure
+
+e                       Toggle ignition of rocket engines, restart jet engines
+
+w / b / button #2       Toggle Wheel brakes / air brake / both
+SHIFT b                 Extend airbrake
+ALT   b                 Retract airbrake
+
+Cursor     up/down      Cockpit view forward / rear
+Cursor     left/right   Cockpit view left / right
+
+Home / Insert / End     View plane from tower or LSO / outside / trail
+
+Keypad view controls: (Num lock engaged)
+4                       Pan right
+6                       Pan left
+2                       Pan up
+8                       Pan down
+5                       Restore forward view
+External view only:
+-                       Zoom out
++                       Zoom in
+
+/                       External target/waypoint padlock
+*                       Internal target/waypoint padlock
+
+ALT h                   Toggle HUD monochrome / color / off  
+SHIFT i                 Toggle analog instrument display
+ALT j                   Toggle joystick/mouse position display
+
+[ENTER] / [BACKSPACE]   HUD air to air / air to ground mode
+n / i                   NUD navigation / ILS mode
+
+[ESC]                   Main menu
+
+p                       Pause
+
+SHIFT w / ALT w         Select next / previous waypoint.
+SHIFT t                 Select next target
+
+m                       Show map (zoom using keypad + and -)
+
+d			Toggle display of cockpit.
+SHIFT d			Toggle display of aircraft in internal view.
+
+For quick joystick re-calibration (without saving new center)
+ALT c                   Center joystick / pedals
+
+SHIFT e                 Engineering mode: Extended panning/zooming, etc.
+
+SHIFT l                 Toggle logging of flight data to file
+
+ALT x / SHIFT q         Quit
+

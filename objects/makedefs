@@ -1,0 +1,20 @@
+# Makedefs for compiling Vertigo object writer using djgpp in DOS
+# or gcc in Linux
+
+CC        = gcc
+OPTFLAGS  =
+WARNFLAGS = -Wall
+CFLAGS    =
+LINKFLAGS = -s
+LIB       = -lm 
+
+ifdef DJGPP
+ DELCMD   = del
+ EXE      = .exe
+else
+ DELCMD   = rm -f
+ EXE      =
+ LINUX  = TRUE
+ DEFSYS = -DLINUX=$(LINUX)
+endif
+

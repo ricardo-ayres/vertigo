@@ -1,0 +1,95 @@
+Vertigo installation instructions for DOS
+=========================================
+Your software comes as a packed file called VER###.ZIP,
+where ### is the version number, e.g. VER026.ZIP for version 0.26.
+You may unzip the archive using e.g. "WinZip" (tm) - make sure to have the
+option for creating subdirectories enabled, or "PKZip" (tm) by the command
+"PKUNZIP -d VER###" (the -d option is important in order to create 
+sub-directories)
+
+If you are updating an older version of Vertigo, you are advised to delete
+your old directory completely to avoid conflicts.
+
+This program is made for DOS. It is usually possible to make it work in a 
+DOS shell from Windows. If you encounter problems, I suggest that you boot 
+into DOS and install and run Vertigo from there.
+
+Thrustmaster FLCS/TQS users might want to use B50LOAD.BAT for setting up the 
+stick. Edit B50LOAD and set the paths as required. Note, that the idea of
+calling B50LOAD.EXE from C:\TQS is to always keep the B50LOAD.DAT file in
+the same place - this avoids unnecessary uploads if used consistently.
+
+Note the system requirements:  An analog joystick and game port are strongly 
+recommended, but a mouse can be used in stead. 
+A fast PC does not hurt, either - otherwise you will have to turn off some 
+graphics to make it run properly.
+Only Sound-blaster compatible sound cards are supported.
+
+To make sure the sound is configured correctly, define the BLASTER variable,
+e.g. by inserting 
+SET BLASTER=A220 I5 D1 H1 T4
+with the proper parameters in your autoexec.bat.
+See also the sound config instructions at the bottom of this text, if the
+method above does not work.
+If you still have no success, and trying to setup sound causes program halts,
+call the program with the option "-nosound".
+
+For information on how to fly and optimize performance of Vertigo, read the
+VERTIGO.TXT or VER_DOCS.HTM and the KEYS.TXT files. It is especially
+important to read the sections on adjusting the calculation rate and
+landscape drawing distance.
+
+Now, finally, you can call VERTIGO.EXE to step into the cockpit.
+
+During the initial display of the menu, you will be able to select screen 
+resolution. In-flight, this is not possible.
+
+Calibration of the joystick may cause a pause with about 10 sec of black 
+screen before the flight starts, and upset the timing and sound. Therefore,
+It is recommended to re-start the program after joystick calibration.
+
+
+Happy flying,
+Anton Norup Sorensen
+
+===============================================================================
+
+The text below is snatched from Shawn Hargreaves documentation on his sound 
+routines, and may be useful if you cannot make your sound card work:
+
+=============================================
+============ Sound configuration ============
+=============================================
+
+When Allegro initialises the sound routines, it reads a file called 
+sound.cfg from the current directory. If the soundcard autodetection doesn't 
+work properly, you can use this file to control the sound code.
+
+The '#' character begins a comment. Apart from comments, sound.cfg can 
+contain any of the statements:
+
+digi_card = x
+   Sets the driver to use for playing samples, where x is one of the values:
+      0 = none            1 = SB (autodetect breed)
+      2 = SB 1.0          3 = SB 1.5 
+      4 = SB 2.0          5 = SB Pro
+      6 = SB16
+
+flip_pan = x
+   Toggling this between 0 and 1 reverses the left/right panning of samples, 
+   which might be needed because some SB cards (including mine :-) get the 
+   stereo image the wrong way round.
+
+sb_port = x
+   Sets the port address of the SB (this is usually 220).
+
+sb_dma = x
+   Sets the DMA channel for the SB (this is usually 1).
+
+sb_irq = x
+   Sets the IRQ for the SB (this is usually 7).
+
+sb_freq = x
+   Sets the sample playback frequency. This defaults to 16000. Other 
+   possible values are 8000, 11025, and 22050.
+

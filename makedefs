@@ -1,0 +1,117 @@
+#Makefile for compiling Vertigo using DOS/djgpp or Linux/gcc
+
+#Select GUI type:
+GUI = CGUI
+#GUI = MGUI
+#Note: MGUI code is not maintained since v0.25 
+
+#Select X11 or Console version (Linux only):
+#Note: Only X11 version works with MGUI
+GRAPHTYPE = X11
+#GRAPHTYPE = CONSOLE
+
+#Select static or shared libraries (Linux only):
+LIBTYPE = STATIC
+#LIBTYPE = SHARED
+
+ifndef DJGPP
+ LINUX  = TRUE
+ DEFSYS = -DLINUX=$(LINUX) -D$(GUI)=TRUE
+ ifndef ALLEGRO
+  ALLEGRO = $(HOME)/src/allegro-4.0.1
+  CGUIPATH = $(HOME)/src/cgui
+ endif
+else
+ DEFSYS = -D$(GUI)=TRUE
+ ifndef ALLEGRO
+  ALLEGRO = C:/devel/djgpp/allegro
+  CGUIPATH = C:/devel/djgpp/cgui
+ endif
+endif 
+
+CC     = gcc
+
+#High performance 
+OPTFLAGS = -mcpu=pentium -O2 -ffast-math -fomit-frame-pointer
+#Development
+#OPTFLAGS = 
+
+WARNFLAGS = -Wall
+
+#Normal compilation
+CFLAGS =
+#For symify
+#CFLAGS = -g
+
+#Normal stripped
+LINKFLAGS = -s
+#For debugging
+#LINKFLAGS =
+
+ifdef DJGPP
+ DELCMD  = del
+ PROGRAM = vertigo.exe
+ EXE     = .exe
+ MAKE    = make.exe
+
+ SYS_OBJECTS =
+ SYS_HEADERS =
+ SYS_LIBS    =
+ ifeq ($(GUI),MGUI)
+   SYS_OBJECTS = mgmenus.o mgerror.o
+   SYS_HEADERS = mgui/mgmenus.h mgui/mgerror.h
+   SYS_LIBS    = -lmgui -lgrx20
+ endif
+ ifeq ($(GUI),CGUI)
+   SYS_LIBS    = $(ALLEGRO)/lib/djgpp/libaldat.a -lcgui 
+   SYS_OBJECTS = cgmenus.o
+   SYS_HEADERS = cgui/cgmenus.h
+ endif
+
+ #Link with Allegro 4.0 etc.
+ #Order of libraries is important
+ LIB    = C:/devel/djgpp/cgui/obj/djgpp/tools/datedit.o $(SYS_LIBS) -lm -lpc -lalleg
+
+else
+
+ # Linux
+ DELCMD  = rm -f
+ EXE     =
+ MAKE    = make
+
+ VERSION = 0.26
+ EXEDIR = vertigo-$(VERSION)
+ EXEFILES = $(PROGRAM) install.txt keys.txt license.txt vertigo.txt *.dat
+
+ ifeq ($(GRAPHTYPE),X11)
+  PROGRAM = Xvertigo
+ else
+  PROGRAM = vertigo
+ endif
+
+ SYS_OBJECTS =
+ SYS_HEADERS =
+ SYS_LIBS    =
+ ifeq ($(LIBTYPE), STATIC)
+   ALLEGRO_LIB = `allegro-config --libs --static`
+ else
+   ALLEGRO_LIB = `allegro-config --libs`
+ endif
+ ifeq ($(GUI),MGUI)
+   SYS_OBJECTS = mgmenus.o mgerror.o
+   SYS_HEADERS = mgui/mgmenus.h mgui/mgerror.h
+   SYS_LIBS    = -lmgui $(ALLEGRO_LIB)
+ endif
+ ifeq ($(GUI),CGUI)
+   SYS_LIBS    = $(ALLEGRO)/lib/unix/libaldat.a -lcgui $(ALLEGRO_LIB)
+   SYS_OBJECTS = cgmenus.o
+   SYS_HEADERS = cgui/cgmenus.h
+ endif
+
+ ifeq ($(GRAPHTYPE),X11)
+  LIBG   = $(CGUIPATH)/obj/djgpp/tools/datedit.o $(SYS_LIBS) -lm -L/usr/X11R6/lib -lX11
+ else
+  LIBG   = /x/home/norup/vertigo/cgui/obj/djgpp/tools/datedit.o -lm -lvga $(SYS_LIBS)
+ endif
+
+endif

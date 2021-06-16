@@ -1,0 +1,1749 @@
+Vertigo v.0.26 documentationThe
+Vertigo 
+Flight Simulator
+version 0.26
+by
+Anton Norup Sørensen 
+Latest edition of this document: April, 2002
+This document is distributed in HTML format as "ver_docs.htm" and in plain text 
+as "vertigo.txt" 
+
+
+  Contents
+  Introduction 
+  Description 
+  Disclaimer 
+  Instructions 
+    Installation 
+    Hardware requirements 
+    Menus 
+      Controls: Linear / exponential controls 
+      Controls: Noise filter 
+      Graphics resolution 
+      Graphics: Viewing geometry 
+      Graphics: Set landscape drawing distance 
+      Calculations 
+      Realism 
+    Keyboard commands 
+    Head Up Display 
+      Navigation mode 
+      Air to ground mode 
+      Air to air mode 
+    Instruments 
+    Scenario 
+  Flight Model 
+    Propeller engines 
+    Jet engines 
+    Rocket engines 
+  Weapons 
+  Targets 
+  Selectable aircraft 
+    Grumman F-14A Tomcat 
+    British Aerospace Sea Harrier 
+    Lockheed F-104 Starfighter 
+    Lockheed U-2 
+    Vought F4U-1 Corsair 
+    Saab MFI-17 Supporter 
+    Dihedral demo 
+    North American X-15A-2 
+    Grumman Lunar Module 5 
+  Carrier Landings 
+  Catapult launches 
+  Other things to try 
+    Spins 
+  Flight data logging 
+  Tips for beginners 
+  Version history 
+    Latest changes: April 2002, version 0.26 
+  Known bugs 
+  Updating 
+  Distribution 
+  Troubleshooting 
+  Other "home-built" flight sims 
+  About the author 
+  Why is the simulator called "Vertigo"? 
+  How can YOU help making Vertigo better? 
+  Credits 
+  Feedback 
+
+
+
+Introduction
+I have wanted to write my own flight simulator since I got my first computer, a 
+VIC-20 back in 1982, or so. The commercially available flight simulators often 
+offered great game-play, but had frustratingly crude flight models. In the 
+winter 1993/94, I enjoyed Eyal Lebedinsky's public domain simulator, "FLY8". It 
+convinced me that it was possible to write a fairly realistic and fast 
+simulator, running on a IBM-compatible PC, as a hobby project. In the summer of 
+1994, I bought my first PC, and started writing Vertigo in the autumn. It was my 
+first piece of C-code longer than ten lines.
+Mean while, the quality of simulators for the PC has risen considerably, and 
+some have quite nice flight models. Still, programming on your own is 
+worthwhile, as a means to understanding the physics of flight and plainly having 
+fun. 
+
+
+Description
+In short:
+Vertigo is a flight simulator that focuses on realism of the flight model. 
+Several types of aircraft are selectable. Scenario is a mountain-landscape with 
+an airfield, surrounded by a sea on which an aircraft carrier sails. Also a 
+Lunar scenario is available. Day or night illumination can be selected. 
+
+
+Disclaimer
+You are using this software at your own risk. I am not responsible for any 
+damage to your soft- or hardware caused by the included software. 
+This program is a computer game. It is not suitable for flight training or 
+aircraft design. Failure to understand this may lead to a life-threatening 
+situation. 
+If this program crashes, interrupts may be left in a way that will crash the 
+entire computer, requiring a reboot. So do not run any other programs operating 
+on important files etc., while running Vertigo. 
+
+
+
+Instructions
+Installation
+Vertigo is not plug-and-play. It will take a little effort to get it
+running properly.
+Please take your time to go through the steps described in INSTALL.TXT
+
+
+
+Hardware requirements
+         The simulator will in principle run on a 386 PC with math 
+        co-processor, but to get proper performance, you will at least 
+        need a 486DX2/66. A 100MHz Pentium or faster is recommended. 
+	For low-end PCs, read the section on "Configure calculations"
+	carefully.
+		 
+         For controls, an analog joystick is strongly recommended, but a
+        mouse can also be used. Rudder pedals and throttle are supported. 
+        There are problems with some modern joystics. The old-fashioned
+        analog ones using the gameport usually work well.
+	
+         For sound, only Sound Blaster compatible cards are supported.
+	For proper setup under DOS, define the BLASTER environment variable, 
+        e.g. SET BLASTER=A220 I5 D1 H1 T4
+
+Menus
+	Access the Main Menu by pressing [ESC] in Vertigo.
+
+        The nice MGUI (Morello Graphical User Interface) is used.
+        The menu is intended to be mouse operated, but it is also
+        possible to use keyboard:
+         Arrow keys changes focus between items.
+         TAB skips between sections.
+         ENTER activates an item.
+         F10 activates the upper menu bar.
+
+        I like to think the menues are very easy to use.
+        Nevertheless, here are a few explanations for some of the
+        more obscure options:
+                
+Controls menu: Linear / Exponential controls:
+        Exponential mode has 50% lower sensitivity at small deflection,
+        but at larger deflection the sensitivity increases rapidly.
+        The full stroke is the same in both modes. Exponential controls
+        are recommended.
+
+Controls menu: Noise filter:
+        The joystick can be read 1, 3, or 5 times for each frame.
+        The median of the readings is used as control input.
+        For a noisy joystick setup, use a large number of readings.
+
+Graphics: Graphics resolution:
+        The three resolutions can only be selected at program start-up, 
+        not in-flight. The monitor frequency will also be changed, but this
+        will only be effective when the program is re-started.
+        There is no guarantee that the resolutions listed in the menu
+        actually works on your hardware.
+
+Graphics menu: Viewing geometry:
+        In order to percieve the correct perspective of the 3D 
+        graphics, you must enter correct values here.
+        If you do not have an extremely large monitor, or almost touch the
+        screen with your nose, you will get a rather limited field of view,
+        unfortunately. You can get a bigger FOV by altering the values,
+        but this will introduce geometrical distortions, too.
+        The default setting is for an unnaturally large field of view,
+        typical of what is encountered in most simulators.
+
+Graphics menu: Set landscape drawing distance:
+	This parameter sets to what distance to draw the fractal
+	landscape out to, between 4 and 10 kilometers, with 8 kilometers
+	as defult. There is a difference in frame rate of up to 50% between
+	the two extreme settings, so adjusting this parameter may help you
+	to achieve a proper frame rate.
+
+Configure calculations:
+	Here you state how many iterations of the flight model that is
+	performed for each screen update.
+	 Calculations are done for a real-time model. The more iterations
+	per second, the more precise the model will get. If the intervals 
+	between calculations becomes comparable to the dynamic time-scale 
+	for the aircraft, errors will be significant, leading to 
+	oscillations, eventually making the plane unflyable.
+         The onset of oscillations depends on the selected aircraft, but
+	generally becomes a problem at high velocities,if the calculation 
+	rate goes much below 20 Hertz.
+	 On the ground the friction forces on the wheels will require
+	more than 50 calculations per second to avoid oscillations.
+	As the Harrier is the most sensitive aircraft to this problem, you
+	should use this aircraft stationary on the ground when adjusting
+	the rate.
+         Another symptom of a too low calculation rate is violent 
+        oscillations when locked onto the catapult.
+	 Of course, you will also want to see what is going on, so 
+	the calculation rate will be a compromise between precision and
+	frame-rate.
+		For 486's, around 5 calculations per update will give
+	a calculation rate close to 70 Hz, and 10-15 frames/sec.
+	This should be perfectly OK for both precision and vision.
+		On 586's, you will have no trouble with precision or 
+	frame-rate if you use more than 3 calculations per update. 
+		The calculation/frame rate is also strongly depending
+	on the selection of graphics detail. For the highest frame rate, 
+      use "flat ground" instead of "fractal landscape".
+	Only high-end machines are expected to perform properly using
+	the fractal ground. Personally, I prefer flat ground for flying on 
+      a 486DX2/66.
+		The frame-rate and calculation-rate is displayed when
+	you exit Vertigo. As the rate displayed is the average for the
+	entire run, you will have to exit, reenter and then exit again,
+	for a reliable number, if you change the configuration.
+
+Realism:
+                If you are having too many difficulties with controlling
+        the aircraft, you may want to change the realism settings.
+        Here are listed the settings for maximum realism:
+
+        Realistic propeller engine       Active / button in
+        Realistic jet engine             Active / button in
+        Wind                             Active / button in
+        Manual rudder control            Active / button in
+
+Keyboard commands
+	Please refer to the menu page, accessible by pressing [ESC].
+        The keys are described in the seperate file KEYS.TXT for 
+	easy access.
+	
+	Do not use the "Pause" button! This will confuse the timing of
+	the flight model. Use "P" instead.
+
+Head Up Display
+        The default color of the HUD is monochrome green. If you want
+        a multi-color HUD or to turn the HUD off, cycle between these
+        modes by pressing "ALT h".
+	 The HUD is similar to what is seen in other simulators:
+	The small cross at the centre is where the nose is pointing,
+	and is also the neutral point for the control deflection markers:
+	red cross for the stick, and red vertical bar for the rudder.
+	If your calibration seems OK, you can switch the control markers 
+	off (and on again) by pressing [j].
+	 If you have entered correct values in the Graphics configuration
+	menu, the scale of the pitch ladder and the heading strip should
+	correspond to the actual angle.
+	 I have taken the liberty to extend the pitch ladder to the
+	entire screen, which is probably what we will see with large
+	HUDs or helmet mounted displays in the future.
+       In the top right corner, angle of attack is displayed in degrees.
+	The altitude ladder at the right side is displayed in feet.  
+	Negative altitude is red. 005 reads 50 feet. Below the altitude
+	is printed in numbers: 0004 reads 4 feet. Note that the altitude 
+	is measured from sea-level, and is not indicating your height 
+	above the ground.
+	 Below that is the vertical velocity in feet per second. Vertical 
+	velocity is also displayed by a vertical bar to the left of the 
+	altitude ladder. Blue for positive, and red for negative. The bar 
+        reaches the end of the scale at 100 fps, marked by a white border.
+         If the altitude Above Ground Level is 3000ft or less, the
+        altitude AGL is displayed to the lower right. If this gets below
+        300 feet, the color will be red.
+        If a ground collission is predicted within a few seconds, a "PULL UP"
+        message will flash in the center of the HUD. As the prediction is
+        very simple, based only on the ground directly below, it should
+        be interpreted with caution. Lowering the undercarriage disables the
+        warning.
+	 The Indicated airspeed ladder is at the left, displaying knots.
+        05 reads 50 kts. Below, true airspeed is printed by digits, and
+        immediately below that, the Mach number is shown.
+	 At the upper left is a g-load meter.
+         A marker move around: The flight path marker is drawn as a 
+	simple aircraft seen from behind, with body, wings and vertical
+	stabilizer. This shows the direction of your velocity vector,
+	i.e. where you are going. You may find this to be your most
+	important instrument, especially during landing.
+
+Navigation mode
+         Above center, a compass tape is displayed. A 'V' arrow marks
+        the direction to the selected waypoint.  To the lower right a
+        text array provides further information:
+        Uppermost to the left is the waypoint number, and to the right
+	the waypoint type. Below to the left is the distance in
+	nautical miles and to the right the direction to it.
+	At the bottom the estimated time to reach the waypoint is
+	shown, assuming current speed and course. If this is 100 minutes
+	or more, "--:--" is displayed.
+        At the very bottom, so low that it will be behind the analog
+        instruments if they are displayed, you will find a bank indicator.
+        There are tick marks for 0, 10, 20, 30, 45 and 60 degrees of
+        bank. If the bank exceeds 60 degrees, the needle will be flashing.
+
+Air to ground mode
+         Two gun sight modes are available, depending on air-to-ground
+        or air-to-air mode, as shown to the lower left along with the
+        number of remaining gun rounds.
+	 The CCIP (Continuous Calculated Impact Point) gun sight is a
+        larger circle with a dot in the center, shown in A-G mode.
+        This predicts where a bullet fired at this moment will hit the
+        ground. It only shows up if the flight time of the bullet from
+        shot to impact is less than 10 seconds. The calculation is rather
+        precise, probably more than is possible in real life.
+
+Air to air mode
+         In A-A mode, a "snake" is shown, indicating the path that
+        projectiles fired within about the last three seconds would follow.
+        If a target is selected, it will be surrounded by a box, and if
+        it is within the distance corresponding to the furthest point
+        of the snake, a Lead Computing Optical Sight (LCOS) marker will
+        be displayed. Placing this circle on a moving target and firing
+        is not a guarantee for a hit, as the display lags one bullet
+        time of flight behind. So think ahead!
+         Inside the LCOS circle, a target range clock is shown. Each
+        quarter of a circle represents a distance of 1000 feet.
+         At the perimeter of the target box, two markers are shown: The
+        line is the target heading reltive to yours, projected onto the
+        horizontal plane. If you are on the same heading, the line will
+        be above the box, and below if you are on opposite headings.
+         The target aspect angle is displayed by a "V". Aspect angle is
+        angle between the target heading and the line of sight between the
+        target and you. If the V is at the bottom, the target will be seen
+        from behind. If it is horizontal, you are looking at the side
+        if the target.
+         Extending from the center axis marker, a line is pointing
+        towards the selected target, also if it is outside the screen.
+         Target range (in nm) , closure speed (in knots) and aspect angle
+        is written to the lower right.
+
+Instruments
+	Instruments normally not shown in a HUD is at the lower section
+	of the screen.
+         Throttle is displayed in the leftmost box. For the simple jet and
+        propelle engine model, the red bar is the actual percentage RPM,
+        while the broad green bar is the requested value.
+        A yellow "A" is displayed in the middle of the throttle bar when
+        auto-throttle is active (F-14 and Lunar Module only).
+         For the detailed jet and propeller engine model, a black vertically
+        sliding lever is the throttle. If the jet engine has afterburner,
+        a number in the middle of the throttle slider indicates the number
+        of afterburner stages set to burn.
+         To the right of it there is a lever with a narrow blue handle for
+        propeller RPM setting.
+	 Further right is the flap setting indicator. Red again showing
+	the actual position, and broad green the desired.
+	 A number of "G"'s indicates the status of the gear. Their positions
+	are corresponding to the location on the airframe.
+	Gray for retracted.
+	Red for moving.
+	Yellow for down.
+	Bright green for contact with ground.
+	When wheel brakes are activated, the symbol changes to a "W".
+	 Below, aircraft with air brakes will have the status of the 
+	brake shown by a "B" in different colors like for the gear, but 
+	with yellow indicating fully extended.
+         Similarly, an "H" shows the status of the arresting hook.
+	 For the Harrier, a nozzle angle diagram is shown. Angle ticks
+	have 15 degrees intervals. Green line for desired angle, red 
+	for actual.
+         When DLC is activated in the F-14, spoiler deflection is indicated
+        by a yellow marker between green middle and limit markers at the
+        bottom of the screen.
+        Also for the F-14, sweep mode and angle is displayed to the lower
+        right by an arrow-like symbol, with "A" or "M" inside to indicate
+        automatic or manual sweep mode, and the sweep angle is in degrees
+        below.
+      In the right corner, trim settings are displayed, using red marks on
+      a grey cross resembling an aircraft. The tick on the vertical line
+      displays elevator trim, on the long upper horizontal line, aileron
+      trim, and on the lower short horizontal line, rudder trim is shown. 
+	 Flying simpler aircraft like the Corsair and Supporter feels
+	more realistic with the HUD off, which is the default mode for these
+        aircraft. You can cycle between the HUD off mode and different
+        color modes by pressing [ALT h] .
+
+
+       At the bottom of the screen, a few "real" analog instruments are
+      shown. The lay-out is in most cases inspired by the Supporter
+      cockpit instruments.
+      All aircraft:
+       Artificial horizon:
+        Displays pitch and roll. Shortcomings:
+        Makes a unrealistic "flip" at zenith/nadir, and the numbers look weird.
+        Cannot be tilted by nasty maneuvers.
+       Airspeed:
+        This displays indicated airspeed in knots.
+       Vertical Velocity Indicator:
+        Behaves ideally, i.e. no lag or altitude influence.
+        Unit: Thousands of feet per minute.
+       ILS needles:
+        Works like those on the HUD. A red flag is visible when the ILS
+        is inactive.
+       Compass:
+        Looks like a magnetic compass, but has no of the effects implemented
+        that makes magnetic compasses tricky.
+       Accellerometer:
+        Displays G's pulled. Narrow needles indicate max/min load during
+        the flight.
+       Altimeter:
+        Has a needle that turns once per 1000 feet and a digital display
+        showing hundreds of feet. 
+        Altitude based on air density is shown, *not* height over ground!
+        Air pressure is always 1013 HPa at sea level in this simulation,
+        so the altimeter does not need adjustment.
+       Turn and slip:
+        Consists of a ball, ideally supposed to show yaw, but in reality
+        showing the ratio of acceleration in the aircraft's horizontal axis
+        to the acceleration in the vertical axis. This means, that change in
+        g-load and changes in rudder input, for instance, will also affect
+        the position of the ball.
+        The needle above shows the angular speed around the vertical axis,
+        in arbitrary units.
+       Fuel level:
+        This twin dial shows the fraction of internal fuel left.
+       Gear position indicator:
+        The coloured of a letter for each wheel indicates the position:
+        Dark for up, yellow for moving and green for down. Also airbrake and
+        hook position are shown.
+       For the VVI, IAS and ALT indictors, a delay in response time is
+       modelled.
+      Propeller engine only:
+       RPM dial:
+        Units are 100's of Rounds Per Minute.
+       Manifold pressure:
+        I'll have to work a little on this still to display proper values,
+        especially at low RPM.
+        Units are inches of Hg.
+       Fuel flow:
+        Units are gallons per hour.
+      Jet engine only:
+       These instruments are made to resemble the lay-out in the F14 as
+       much as possible, with some modification to make them useable for
+       single engine aircraft also.
+       RPM percentage:
+        A vertical strip shows the RPM, in units tens of percent of the
+        military throttle RPM. The scale is in two segments in order to
+        give more precise readings above idle RPM.
+       Exhaust Gas Temperature (EGT):
+        This two-scale vertical strip instrument shows the EGT in
+        units of tens of degrees Celcius.
+       Fuel flow:
+        This two-scale vertical strip instrument shows the fuel flow
+        to the combustion chamber in units of thousands of pounds per
+        hour. The fuel flow to afterburners is not shown. 
+       Map:
+	 The only head-down instrument is a map, continuously updated to
+	be centered on your position and rotated to your heading.
+	View by pressing "m" and zoom in/out by pressing "+" and "-" on
+	the keypad. Zooming out to draw a large portion of the map will
+	make the computer extremely busy, which will mean less time to 
+	perform flight model calculations. This may lead to unstable aircraft
+	behaviour while you are looking at the map, so be careful!
+
+Scenario
+	Although the graphics is very simple, most of the time is spent 
+	on drawing. To allow for precise flight model calculations, 
+	graphics has to be kept at a minimum.
+
+        Two scenarios are available: Earth and Moon landscapes. 
+
+	Two types of landscape can be selected from the 
+	Configure graphics => Landscape type menu.
+	Flat:
+         The ground is simply a green flat surface, with a blue sky above.
+        The ground within 10 kilometers of the viewer is marked by
+        a grid of brown lines. The side of a square is 1 km.
+        Within 1 km of the viewer, another gray grid marks the ground.
+        The side of a gray square is 100 m. 
+	Fractal: 
+	 This generates a random fractal mountain-landscape, with
+	water at sea-level. The surface is drawn using triangles, whose
+	shortest lines are 1 km. You will have to judge, if you can
+	accept the decrease in frame-rate compared to the flat landscape.
+	See the "Set landscape drawing distance" section to optimize this
+	mode.
+
+         The runway orientation is 00-18, and is 1500m long, 40m wide.
+
+         In the sea, an aircraft carrier moves about. See the description
+        further down.
+      
+        The Moon landscape is all grey, with hills and plains. There will
+        always be at least a 1km square flat area at the intended landing 
+        site. The most important difference is of course the atmospheric
+        pressure of zero and the weak gravitational pull on the Moon.
+
+         Illumination changes with the time of day. From the menu, day,
+        night, dawn or dusk can be selected. During dawn and dusk, the
+        lighting will change between day and night condition during half
+        an hour. As the time since program start is added to the time
+        selected in the menu, delecting dawn or dusk after a long flight
+        may result in instant day or night.
+         During nighttime, the runway and carrier will be marked by
+        artificial lights.
+         Almost all stars visible to the unaided eye will be displayed
+        in the night sky. The orientation of the sky can be set by
+        specifying the local latitude and the sidereal time in the menu.
+
+
+
+Flight model
+
+The aircraft is modelled as a combination of objects. For each object,
+the forces acting on it are calculated, and from the object's position
+relative to the centre of gravity of the entire set, resulting force and 
+torque is calculated. By measuring the real time elapsed, the forces are 
+translated to new vector and angular velocities for the airframe.
+
+For each object the velocity and angle of the incoming air is calculated
+from the attitude and speed of the aircraft, also taking into account
+the angular velocity of the airframe. For instance, the airspeed of the
+outer wing is influenced by yaw rate, and the AOA is influenced by
+roll rate.
+
+The group of objects, on which aerodynamic forces (lift, profile- and 
+induced drag) are calculated typically consist of body, port/stb. inner
+wing, port/stb. outer wing, horizontal and vertical stabilizer, totalling
+7 objects. The properties (chamber, geometric AOA, area) of the relevant
+objects are changed according to control input. E.g. the properties of the
+two outer wing sections are modified by aileron input. The forces
+are calculated from the empiric equations in basic aerodynamics textbooks.
+
+The density of the atmosphere decreases exponentially with altitude,
+and the temperature decreases linearly up to the tropospause, and
+is constant above that.
+
+On objects representing undercarriage, the only aerodynamic force 
+calculated is profile drag. Forces on the wheels when on the ground 
+distinguish between static and dynamic drag, and include rolling friction.
+ABS-type brakes are implemented, so skidding along the rolling direction
+will only occur if you also skid sideways.
+Forces are calculated parallel and perpendicular to each wheel, making
+steering possible, as the angle of one of the wheels is connected to the 
+rudder input.
+The spring forces in the upward direction are damped.
+In addition, hard-points are at nose- tail- and wing-tips. These only
+provide friction-drag and spring forces from the ground.
+There are certainly still some shortcomings in the calculation of ground-
+friction forces. While of limited precision during fairly normal attitudes,
+they are completely wrong if you are inverted (You are also doing something
+completely wrong, if you encounter that situation!)
+If you go for a drive in the fractal landscape, you will find that the
+wheel forces are not calculated correctly on non-horizontal surfaces.
+
+For aircraft having hydraulic actuators for the control surfaces, the
+rate of movement has an upper limit to emulate the response time.
+
+Fuel tanks are located in wings and body, affecting aircraft weight and
+inertia. Typically, the wing tanks are emptied before the body tanks
+are used.
+
+All objects, except hard-points are affected by gravitational forces.
+
+ Auto-coordination can be activated, controlling rudder position to
+minimize yaw. As this only can correct for yaw appearing, not anticipate
+it, a small amount of yaw will still be present. Also, the rudder has
+limited effectiveness, so you can enter a situation where a large amount
+of yaw still occurs.
+
+The aircraft are all conventionally stable: Any pitch and yaw will tend
+to be eliminated without any control input from the pilot. The stability
+combined with inadequate damping of the motion around the equilibrium
+position appears as a "nose bounce" for some aircraft. You can minimize
+the bounce by applying smooth stich movements and keep the aircraft in
+trim.
+
+Propeller and jet engines comes in two types: Simple force generators and
+more detailed models described below.
+
+
+Propeller engines
+In the detailed version of the propeller engine, ehe engine is a torque
+generator acting on the propeller. The amount of torque depends on the
+throttle setting, RPM and air desity. Torque will typically try to increase
+the RPM of the propeller, but at high RPM and low throttle, the engine will
+act as a brake.
+ The propeller has mass and rotates rapidly. Torque on the propeller
+from the engine will inflict the opposite torque on the airframe and
+the rotating mass will act as a huge gyroscope, turning the airframe
+in a direction perpendicular to the direction that the airframe tries to
+rotate the propeller.   
+ The propeller is a rotating wing. The angle of attack of the propeller
+depends on the blade pitch, RPM, position angle and radius on the 
+propeller disc, airspeed, airframe pitch and yaw and the inflow and vortex 
+airspeed. This results in pretty complex behaviour of the resulting
+lift and drag vectors. These can be split in directions along the propeller
+axis and perpendicular to it, resulting in thrust and drag acting as torque.
+In addition propeller thrust and torque also depends on air density.
+The actual lift and drag coefficients are derived from wind tunnel data
+for the NACA0012 profile.
+  Because of airframe pitch and yaw, the thrust is changing over the
+propeller disc, causing asymmetric thrust, known as P-factor.
+  The propeller thrust accelerates air backwards and the drag/torque
+creates a vortex. The flow is partially absorbed by the body and wing
+root, but some of it hits the tail surfaces. This increases control
+efficiency at low speed, but the vortex hits at an angle, causing
+a yaw moment that must be countered by rudder input.
+ As the effective angle of attack and depends on airspeed, the propeller 
+thrust efficiency is strongly depending on airspeed too. To expand the 
+range with good thrust and efficiency, the propeller pitch can be changed. 
+The pitch is adjusted by a servo mechanism to result in a fixed RPM. The
+desired RPM can be set by the pilot.
+ The Corsair engine has a two speed auxiliary blower in addition to the
+constant speed supercharger. The blower operates in idle at low altitude
+and at two speeds at higher altitude, controlled automatically. Also,
+a 2:1 reduction gear between engine and propeller is implemented.
+
+Jet engines
+In the detailed version of the jet engine model, the throttle position
+sets the desired RPM percentage, with a maximum RPM of 100%.
+The thrust depends on RPM, altitude and airspeed. There is a slight
+decrease in thrust at moderate airspeeds as the exhaust speed is
+nearly constant while the intake airspeed increases. At higher airspeeds,
+ram-effect helps the compressor, and thrust increases with the square
+of the speed. At very high speeds, thrust may be limited by variable
+air intake ramps, as for the F-14.
+The RPM response speed degrades with altitude.
+Fuel consumption vary with RPM setting and decreases with altitude.
+
+Afterburners can be lit gradually, e.g. the F-14 has five burner stages.
+The fuel consumption at full afterburner is about five times higher than
+at conventional thrust, and giving only about a two-fold increase in thrust.
+Note that the fuel flow to the afterburner will not be shown on the FF
+instrument, but it will be seen after a short while on the fuel level gauge.
+The afterburner throttle is indicated by a number in the middle of the
+throttle handle slider.
+
+A compressor stall may be started by poor intake airflow or a too high
+combustion chamber pressure. The symptoms will be a sudden drop in thrust,
+very high exhaust gas temperature, and dropping RPM. Provoking a compressor
+stall may be done by a combination of high AoA or yaw, low indicated
+airspeed, high throttle setting or advancing the throttle too fast.
+The cure is to reduce throttle to idle and reduce AoA.
+
+Flame outs also show the symptoms of a drop in thrust and RPM, but is
+distinguished by a drop in EGT too. Flame outs may be started by flying
+at very high altitudes or reducing the throttle too fast at high
+altitudes. Also recovery from a compressor stall may lead to flame out.
+
+Engine air restarts are initiated py pressing "e". For a succesfull restart,
+go to moderate or low altitude and pick up speed to windmill RPM to a
+useful range. Do not apply throttle too abruptly, or you will stall the
+engine during the restart.
+
+Rocket engines
+The rocket engine is, at least in principle, the simplest of the three 
+modelled types of engines. 
+Thrust is proportional to the amount of fuel and oxidizer pumped into the
+combustion chamber, regulated by the throttle.
+The engines modeled for the X-15 and Lunar Module both have a considerable
+thrust even at idle throttle. To toggle fuel flow and ignition, press "e".
+
+
+
+Weapons
+
+It was with mixed feelings that I started to implement weapons on 
+aircraft in Vertigo. Violence is being glorified by a huge part
+of the entertainment industry, and I believe this is contributing to
+increasing violence among people.
+Please, never forget the cruelty of war, whatever enjoyment you may have
+from strafing the targets.
+
+So far only cannons are implemented, as these are my idea of the weapon of
+a classic ace.
+Each gun has a limited amount of ammunition and a specific rate of fire.
+The trajectory of projectiles are influenced by:
+  Initial velocity: The sum of aircraft velocity and muzzle velocity. (You 
+  will then have a slightly larger gun range when flying fast.)
+  Gravity.
+  Drag: Depending on speed and altitude.
+  Mass: A heavy projectile will be less influenced by drag.
+  Gun pointing, not necessarily parallel to the axis of the aircraft.
+  Barrel imprecision: A small random angle to the pointing is added.
+With all these factors, you will be happy to have the CCIP/LCOS gun sights 
+described in the HUD section.
+In turn, your aircraft feels the recoil from the guns. You may even 
+utilize this for maneuvering on the ground!
+Bullet impact is only checked for the ground and the practice targets.
+Up to 500 individual trajectories are calculated at one time - if you 
+fire very long salvos, you may have to let go of the trigger to 
+allow some bullets to impact before you can shoot again.
+Note, that long salvos may also reduce frame rate on other than high-end 
+computers.
+Only one bullet per gun can be fired for each calculation iteration.
+If, for instance, your calculation frequency is less than 100 Hz, you 
+will not be able to utilize the full fire power of the 100 rounds/second
+gatling in the Starfighter.
+A fraction of the projectiles are displayed as tracers, about one in three
+for fast firing guns, and a higher ratio for slower guns. The tracers
+cease to burn after five seconds, but the flight path of all projectiles
+is calculated for 15 seconds, after which they are ignored.
+
+
+
+Targets
+You can hone your gunnery skills at a target range close to the airfield,
+with a suitably named waypoint.
+The targets are red and white diamonds that will withstand 10 direct
+hits before they burst. With a diameter of about 4 meters, they are
+quite difficult to hit.
+One target is placed on the ground. Beware that you can see it through
+a hill, but you can't fly through the hill.
+Four targets circle at random altitudes, speeds and g-loads.
+To lock on to the next target, press "SHIFT t".
+To get external and internal padlock views, press "/" and "*".
+
+
+Selectable aircraft
+
+From Main Menu, under Select aircraft, you find six aircraft:
+F-14A Tomcat, F-104 Starfighter, U-2, F4U Corsair, Harrier and
+MFI-17 Supporter.
+
+Do not be fooled by the precise naming of these models. The models
+only have a very vague resemblance to the real aircraft.
+For most of the aircraft, I have just entered crude overall sizes,
+weight etc. from the one-page descriptions that can be found everywhere.
+I have only little specific data to allow for a precise simulation of any
+aircraft.
+- I would be grateful to be provided with them though!
+Comparisons of the performance of the models with the real thing are very 
+welcome.
+Among the reasons for choosing an aircraft to model are:
+Unique aerodynamic properties (goes for the Harrier, U-2, F-14 and F-104),
+engine properites: Corsair and sentimental reasons: Supporter.
+A fair chance of proper modelling - You will not find dynamically unstable
+fly-by-wire aircraft and other complicating matters - at least not yet...
+
+Grumman F-14A Tomcat:
+The Tomcat has in several ways a unique design, caused by the requirements
+for a fleet defence aircraft: High speed, long patrol time, high payload,
+low landing speed and good maneuverability. This is accomplished by
+using variable geometry wings and other features, which are elaborated
+on below:
+
+Variable sweep wings:
+  Sweep is controlled as a function of the Mach number. At low speed,
+  sweep is at a minimum of 20 degrees to minimize induced drag.
+  From about Mach 0.7 to 1.2, sweep is gradually increased to 68 degrees to
+  minimize supersonic drag. 
+  Increasing sweep moves the center of lift backwards, which decreases
+  maneuverability.
+  Sweep can also be controlled manually by using keys F9 to F12. Key "s"
+  toggles between manual and automatic mode. Mode and sweep angle is
+  displayed to the lower right by an arrow-like symbol, with "A" or "M"
+  inside to indicate sweep mode, and the sweep angle in degrees below.
+  At sweep angles larger than 55 degrees, flaps and spoilers will be
+  retracted.
+
+Glove vanes:
+  Above Mach 1, the center of pressure moves backward, although this is
+  not yet implemented in the flight model. This means a larger down-force
+  on the elevator is required, creating more trim drag. To counter this,
+  glove vanes are extended at Mach 1.4. This moves the center of lift
+  forward, which in turn means less drag.
+
+Tailerons and differential spoilers:
+  As ailerons work badly in combination with variable sweep, the aileron
+  function is moved to the tail. At sweep less than 55 degrees,
+  differential spoilers on the upper side of the wings assist roll control.
+  On the wing going down, the spoiler is extended, while it remains flush
+  on the other wing. This method has the advantage of counteracting
+  adverse yaw.
+
+Landing:
+  The Tomcat can be landed as any carrier-based aircraft, by fiddling
+  with throttle and stick. Airspeed will be in the range of 115 to 145
+  knots depending on fuel load, but the optimum AoA is always 10.8 deg.
+  However, another way to land is to use the following two features:
+  Auto-throttle:
+    Toggle auto-throttle by pressing "t" while the throttle is about halfway
+    forward. Now the engines are controlled by a servo mechanism reacting
+    on the aircraft angle of attack. If AoA is less than 10.8 deg, you
+    are going too fast and throttle is reduced, and vice versa.
+    Auto-throttle can be disengaged by moving the throttle handle to idle
+    or full power.
+    A yellow "A" is displayed in the middle of the throttle bar when
+    auto-throttle is active.
+    Unfortunately, I find the auto-throttle very hard to use. Maybe
+    I will manage to tweak it to behave nicer.
+  Direct Lift Control:
+    With constant airspeed and AoA, the way to control your position
+    on the glideslope is to change the amount of lift by controlling the
+    spoiler deflection.
+    When gear is selected down and brakes out, DLC is activated.
+    The spoilers deflect to a middle position of 7 degrees, and deflection
+    is adjusted by pressing "q" for more lift and "a" for less lift.
+    As the tomcat in this version is near minimum weight, you will need
+    a quite large spoiler deflection to stay on the glide slope.
+    Also when landing by stick and throttle only, it will be a good idea to
+    set the DLC to an appropriate value.
+    When DLC is active, spoiler deflection is indicated at the
+    bottom of ths screen.
+    Retracting the air brake will disengage DLC.
+    At touchdown, the spoilers will move to a maximum deflection of
+    55 degrees in order to avoid bouncing off the deck.
+    Again, retracting air brakes will retract the spoilers.
+
+Dual engines:
+  The A-model Tomcat is generally considered under-powered. As this model
+  is not loaded with external stores, that will not be a big problem.
+  A single engine failure makes for an interesting flight due to the strong
+  yaw produced by the remaining working engine.
+  If you are not careful, you will end up in the notorious flat spin.
+  An engine failure may be initiated by pressing "F", or by tormenting
+  the engines. Especially, a yaw will make the engine in the turbulence
+  from the nose prone to a compressor stall.
+
+Armament:
+  One 20mm M-61 gatling cannon with 675 rounds. 
+
+There are a lot of books about the Tomcat - the one I like the most is:
+  Aviation fact file: Modern fighting aircraft: F-14
+  By Mike Spick
+  Salamander books, 1985
+  ISBN 0 86101 194 5
+
+British Aerospace Sea Harrier:
+Weight allows for VTOL.
+Features vectored thrust and jet-supported attitude controls.
+A ground cushion effect kludge is added. This increases vertical thrust 
+gradually to 120% at 1 meter altitude.
+New versions of the Harrier has gyro-stabilization to make hovering easier. 
+In this simulation, you do not have that luxury.
+It will probably take some practice to make this thing do what you 
+actually planned to, when hovering.
+Carrier landing configuration:
+  You have no tail hook and will be ignored by the LSO.
+  Use thrust vectoring for landing.
+Armament:
+  Two 30mm Aden cannons, with 130 rounds per gun.
+
+Lockheed F-104 Starfighter:
+Weight is as with tanks almost empty.
+Stay fast!
+Paint scheme inspired by USAF F-104N used for astronaut training.
+Carrier landing configuration: 
+  Yep, I know a real F-104 would never survive this.
+  Fly the glide slope at +9.0 deg AoA. 
+Armament: 
+  One 20mm M-61 gatling cannon with 725 rounds. 
+  Fires 6000 rounds/minute.
+
+Lockheed U-2:
+The single main gear is located well in front of the centre of 
+gravity, so when the tail-wheel rises, you are in a very unstable
+situation. I suggest you keep the tail wheel on the ground as long as
+the main wheel is touching ground too. 
+I recommend reading the section by Tony LeVier at the end of chapter 6 in
+Ben R. Rich and Leo Janos' "Skunk Works" about landing the U-2.
+No drop-off wheel struts at the wing tips during take-off, so be careful!
+The real aircraft is extremely fragile, so this this will be really 
+interesting to fly if I ever get to implement stress limits.
+The engine is very powerful. Implementing altitude dependent engine
+effectiveness would be interesting, as it only delivers 7% of the power 
+at sea-level when at 70000ft.
+Carrier landing configuration:
+  +3.3 deg AoA.
+
+Vought F4U-1 Corsair:
+The 2000 HP R-2800-8 propeller engine provides tremendous power, but also
+torque, asymmetric thrust, gyroscopic forces and slipstream vortex,
+making this a very challenging aircraft.
+If you select the realistic engine model, rudder pedals are
+strongly recommended. If you don't have pedals, enable auto-coordination.
+Be careful not to nose-over when using the wheel brakes.
+The supercharger has an auxiliary blower that is operated automatically at
+three speeds, depending on altitude:
+  Neutral:     0 -  8000 ft
+  Low    :  8000 - 13000 ft
+  High   : 13000 -       ft
+The blower setting is indicated by a letter on the throttle slider.
+Carrier landing configuration:
+  +6.0 deg AoA.
+  The long nose will make it difficult to see the carrier during approach,
+  but you can cheat by selection not to display the airframe from the
+  cockpit.
+Armament:
+  Six 0.50 in machine guns 
+  with 400 RPG (inboard four) and 375 RPG (outboard two).
+  Convergence is set to 300 meters.
+
+SAAB MFI-17 Supporter:
+A small propeller aircraft used for basic training, reconnaissance and 
+logistics by the Danish and Norwegian air forces, and even as a light attack 
+aircraft by the Zambian and Pakistani Air Force.
+This is the easiest aircraft to fly of those included, so if you are new
+to Vertigo, you should start with this one.
+Carrier landing configuration:
+  +5.5 deg AoA.
+  You have no tail hook, so step on the brakes when landed.
+Armament:
+  Although it has six weapons stations, no weapons are provided in
+  this simulation.
+
+Dihedral demo:
+This model is based on the SAAB MFI-17, but is altered to test upgrades
+of the flight model. The graphics is unchanged, but the flight model
+is quite different.
+As a new feature, wing dihedral can be specified, and this model has
+a positive dihedral of 15 degrees. This creates a rather strong roll
+stability.
+Ailerons and flaps are disabled, but roll can easily be controlled
+by the rudder due to the roll-yaw coupling that results from dihedral.
+The vertical tail fin is made too small, making yaw stability much
+smaller than roll stability. This makes it possible to demonstrate the
+"Dutch roll" by kicking the rudder briefly.
+The wing lift coefficient is as for a NACA0012 profile.
+
+North American X-15A-2:
+The X-15 was a hypersonic and high altitude research aircraft, that flew
+from 1959 to 68. It provided essential information that made building the 
+Space Shuttle possible. The second of three X-15s built, was modified to the 
+X-15A-2, capable of carrying external jettisonable fuel tanks, which are 
+not modelled in this simulation.
+Dropped from about 50.000ft from a B-52, the flight profile may be relatively
+flat, aiming for high speed, or steep if high altitude is desired.   
+Without external tanks, the highest speed reached was 3565 knots TAS and the
+highest Mach number 6.06. The highest altitude attained was 314.750 feet, well
+above the boundary defined as space.
+You may easily beat the altitude record in the simulation, but that would
+likely mean a steeper re-entry that what was used, possibly over-stressing
+the airframe. The steepest re-entry flown was -38 degrees, with an angle of
+attack up to 26 degrees.
+At extreme altitudes, the airflow will be too weak to provide adequate 
+attitude control. Pressing "r" will toggle the activation of a Reaction Control 
+System that will enable you to control the aircraft outside the atmosphere. 
+When you leave the B-52, your airfield will be 175nm ahead of you. After
+flying your research profile, you will have to glide back to a landing there. 
+This is also a tribute to the guys from Argonaut Software that made Birds Of 
+Prey back in 1992, including an X-15 simulation that I enjoyed a lot.
+
+Grumman Lunar Module-5 "Eagle":
+The Lunar Module was used in the Apollo missions for the first manned landings
+on the Moon.
+In this simulation, you can pilot the LM down from the "Low Gate" point to
+touchdown. Low Gate is at a height of 500ft above the surface. The velocity
+of the LM should at this point be 21 m/s forward and 5 m/s down. The amount of
+useable fuel aboard has been reduced by the de-orbit maneuver from the original 
+8164kg to 522kg, so there is not much left for loitering around.
+Using throttle and attitude thrusters, guide the LM to a soft landing.
+An auto-throttle function can be toggled by pressing "t". This will aim at a
+descent rate of -1 m/s. During the descent, you will hear actual radio 
+transmissions from the "Eagle" landing on 20 July 1969 at the appropriate
+heights. At a height of 2 meters, you will get the "Contact lights" report,
+and you may choose to turn off the engine by pressing "e", or continue down
+under power.
+Thanks to H. Frik for making the beautiful graphics for the LM descent
+stage. It is by far the most detailed object in the entire program. He also
+provided lots of data and sound files for the LM simulation.
+
+
+Carrier landings
+
+Maybe the greatest challenge in modern aviation is to land safely aboard an 
+aircraft carrier. Here you get to practice clear weather day or night time
+landings.
+ 
+ The Carrier:
+On startup, a Nimitz class carrier is placed somewhere in the sea. 
+The deck will pitch, roll and heave proportionally to the strength of the
+wind. You can select several locations relative to the carrier at startup:
+ On deck: You will be placed ready for take-off, but you will have to do it
+without the catapult.  
+ On final: You will be placed in landing configuration on the glide slope a
+few miles out.
+ Approach: You will be placed behind the carrier several miles out and you
+will have to put yourself on the glide slope.
+You can of course also start from the runway and find the carrier, which will
+be at the appropriate waypoint.
+
+ LSO:
+If you are approximately on the glide slope, the Landing Safety Officer will
+establish contact when you are 3/4 nautical mile away from the deck.
+At this point, the LSO will expect you to have gone dirty, i.e. lowered 
+gear, hook and flaps.
+You answer by telling aircraft type, that you have the ball in sight and
+the amount fuel left in thousands of pounds.
+You will then be guided by voice until you are safely down, or "waved off" if
+the approach is unsafe. 
+
+ Meatball:
+At a distance of about two miles, the Optical Landing System will become
+visible, located mid-ship on the port side. The arrangement looks like this:
+
+            R   Y   R
+            R   Y   R
+  G G G G G R   Y   R G G G G G
+            R   Y   R
+                R    
+ 
+The R, G, Y letters marks lamps of red, green and yellow color, respectively.
+The yellow and red lights in the central column are made using a Fresnel lens 
+system so that each light emits an approximately 0.5 degree wide cone in the 
+vertical range and much broader horizontally. These lights make up the
+"meatball".
+Each lens is tilted so that if you are above the glide slope, you will see
+one of the upper lamps and if below, the lower lamps. The lowest lamp is red
+to warn of this dangerous situation. If you are within 0.15 degrees of the
+glide slope, the lamp aligned with the green "datum line" will be visible -
+you are on the correct -3.5 degree glide slope.
+If you are deviating 1 degree or more vertically, no meatball will be
+visible - you will have to eyeball what is wrong, use the ILS or listen to
+the LSO.
+At large distance, the position of the ball can be hard to see as the
+entire arrangement just takes up a handfull of pixels. I have made the
+vertical offset of the meatball larger than in reality to compensate for
+this.
+If you keep the ball centered, you will touch down with the hook hitting the
+deck between the second and third wire, thereby catching the third wire.
+As the vertical separation between the hook and your eyes is different for
+the different aircraft, the height of the meatball has to be adjusted
+accordingly. This is being done by rolling the lights a few degrees -
+as you are sideways offset to the lights when in the groove, this will look
+like a vertical displacement of the lights - beware that if you are not lined
+up, the meatball will give wrong information, e.g. place you too low if you
+are port of the centerline.
+The entire OLS arrangement is gyroscopically stabilized, to avoid ship
+movement affecting the glide slope indication. The stabilization can not
+eliminate the vertical motion, though, so a pilot with a steady hand may be
+able to notice a slightly oscillating meatball.
+The two vertical rows of red lights are used for signalling "wave off".
+ 
+ Lining up:
+To line up visually, examine the center line painted on the deck and
+continued vertically down at the rear. When lined up, the two line segments
+must both appear vertical. Note that due to crosswind, you cannot just
+place the HUD flight path marker on the center line. 
+ 
+ Approach indexer:
+Each aircraft has a specific angle of attack to maintain when on the
+glide slope, providing high lift safely below the stall AoA.
+The airspeed is closely linked to the AoA: If you are fast but following
+the glide slope, the AoA will be too low and vice versa. The optimum
+airspeed changes with aircraft weight, while the best AoA remains the
+same, so if you keep the prescribed AoA and stay in the groove, you
+(almost) don't have to think about the airspeed.
+The AoA to be used is listed in the aircraft descriptions above.
+The indexer is located in the mid-left part of the HUD, and will be visible
+when HUD is on and gear down.
+If the AoA is too large, the upper red downward pointing arrow will illuminate.
+If AoA is too small, the lower green upward pointing arrow will light up.
+Correct AoA will be marked by a yellow ring in between the arrows.
+
+ ILS:
+The Instrument Landing System displays a horizontal and a vertical needle,
+at the center of the HUD, measuring line-up and glide-slope error, respectively.
+At full stroke, the needles show you are 3 degrees off.
+The type of ILS modelled here is a part of the modern Automated Carrier Landing
+System, which eliminates ship roll and pitch from the signal, as well as
+parallax angle to the antennas.
+The ILS is not intended for daytime clear weather use, so when you get 
+confident, try landing without it by switching to navigation mode (press "n")
+instead of ILS mode (press "i"). 
+
+ Landing grades:
+Each landing attempt is graded by three values: The wire number caught, 
+a classification and a score. The LSO will evaluate the score on your flying
+from the moment he asks you to call the ball and until you catch a wire or
+are waved off.
+ Wire number: Catching the number three wire is the ideal, while number two
+and four are acceptable. Catching the #1 wire may be a symptom of a dangerous 
+situation where you were too close to the ramp.
+ Classification     Score              Description 
+     _OK_          4 points        Perfect!
+      OK           4 points        Small deviations corrected by pilot.
+     (OK) / Fair   3 points        Deviations usually corrected without LSO
+                                   calls.
+     No grade      2 points        Large deviations requiring LSO help.
+     Cut pass      1 or 0 points   Unsafe pass - may have resulted in damage
+                                   or injury without LSO help.
+     Wave off      0 points        Landing aborted by LSO because of pilot
+                                   error.
+     Bolter        0 points        All wires missed.
+In addition, out of the context of carrier operations, some statistics on the 
+the individual types of deviations are given, in the form of Root-Mean-Square
+error.
+Also, a floating point "overall score" is given. A bonus is given for
+switching off ILS and/or HUD before calling the ball. For each of the
+realism options that are set for max. realism, a bonus is also given.
+The maximum possible score is 10.0. I will keep a "Sierra Hotel" table
+of the best landings on the Vertigo homepage.
+To submit a landing score, mail me your name, the score, aircraft type,
+HUD and ILS on/off status, realism menu options and the four letter
+validation code printed below the score. 
+Press "p" for a pause to study the landing debriefing.
+
+ Landing pattern:
+Selecting "Carrier: On final" sets you up for a straight-in landing, but in 
+day-time and clear weather, a landing pattern is the correct method.
+A pattern is flown by passing the carrier at 800 feet in the upwind direction,
+where you will be ignored by the LSO, turning left and starting a slow
+decelleration and descent, turning downwind and going dirty, turning base leg
+behind the carrier and turning to arrive on final at 350 feet altitude,
+3/4 of a mile beind the carrier and on approach speed, to be asked to
+"call the ball" as you come out of the turn.
+Due to the limited sense of spatial awareness possible in this simulator,
+flying a pattern will be quite difficult. The waypoint padlock will
+probably be helpful.
+
+ Wind:
+The carrier will be heading into the wind at a speed resulting in 25 kts of
+wind down the deck. If the natural wind is more than 25 kts, this will not
+be possible, and you will have stronger wind, regardless of what you are told
+on the radio!
+The landing strip is angled 9.2 degrees relative to the deck, so you will
+have a slight crosswind from starboard. 
+The carrier will maneuver to avoid ground, so the wind relative to the deck
+may change. If you want to create more difficult landings, go to the menu and
+switch wind off and on again - the wind will now be of a different strength
+and direction.
+
+ Trapping:
+The wire force is set for each aircraft. The Corsair and U-2 will be
+decellerated at 1G, the F-14 at 2G, and the F-104 at 3.5G, which would
+probably rip it apart in the real world. When you come to a standstill,
+you can raise the hook and take off under your own engine power only, 
+or if you are in the F-14, you can proceed to the catapults.
+
+ Credits:
+The carrier landing simulation would never have been possible without the 
+generous and competent advice from:
+Cole Pierce (gun one), Mike Yukish, Chuck Kilogre, Bill Horne, 
+Pete B. D., Tom M. Olivier, Jim Muse, John Simon and those I forgot in the 
+hurry.
+Thank you! 
+Information for making the simulation more precise is always welcome.
+
+Catapult launches
+
+The four catapults on the aircraft carrier can be selected as
+starting position in the menu - you will be assigned a random one,
+or you can taxi onto a catapult from the deck.
+Taxiing will have to be done extremely precisely and slowly, if you
+are to be attached to the catapult. Normally, a "yellow shirt" would
+guide you, but here you are on your own.
+Behind you, the jet blast deflector will rise.
+To launch, apply full throttle and go into afterburner. If you are using
+keyboard for throttle control, first press on F4 will take you to full
+military throttle, and subsequent presses will light the burner stages.
+After a few seconds, the cat will fire. 
+You will be pushed forward with an acceleration of approx. 2G.
+Only aircraft properly equipped can be launched, which means the
+F-14 Tomcat only.
+If you experience oscillations when locked to the catapult, increase
+the calculation rate in the graphics menu.
+
+
+
+
+  Other things to try
+  As you probably have found out by now, there are no missions. So how come that 
+  I still do not find it completely uninteresting to fly this thing after a 
+  couple of carrier traps and some targets destroyed? Below are listed a few 
+  things, that I find funny to try: 
+  Test piloting: 
+    Take the aircraft and the flight model to the limits and find out how it 
+    behaves. Compare with the performance of the real aircraft, if you have the 
+    data, find out where the realism of the flight model fails. I'll be happy to 
+    hear about your results. 
+  Radio-controlled flight: 
+    Viewing from the tower, you can fly in a manner similar to R/C flight. Be 
+    sure to select a fairly slow aircraft with a small turning radius. You will 
+    easily get confused interpreting the attitude of the aircraft, but this is 
+    also experienced in real life in difficult lighting situations. 
+  Aerobatics: 
+    You can perform a wide range of aerobatic maneuvers, including some that 
+    involve stalling. 
+  Spins
+    A stall may develop into a spin, especially if aileron and rudder input is 
+    given to provoke it. The tendency to spin varies greatly between the 
+    aircraft. Mainly because of their relatively short wings, the Starfighter 
+    and Harrier tumbles rather than spins. The U-2 takes a lot of work to spin, 
+    but when it gets going, it will be even harder to stop. The F-14 can be 
+    spun, if strongly provoked, but shutting down one engine causes a high risk 
+    of entering a flat spin. The T-17 spins easily and recovery is effortless. 
+    The Corsair is very prone to enter a spin that may easily become flat and 
+    tough to get out of.
+    Recovery from a spin depends on a lot of factors, but roughly goes as this: 
+      Flaps: Up 
+      Throttle: Idle 
+      Stick: Center, or a little forward 
+      Rudder: Opposite rotation until it stops 
+      Pull gently out of dive when airspeed is sufficient. 
+  Landing: 
+    The skills of a pilot is often judged in the smoothness of the landing. When 
+    you routinely can bring the Starfighter to a stop before the end of the 
+    runway, you are getting the hang of it. 
+  Hovering: 
+    A very difficult exercise is to practise vertical take-off and landings in 
+    the Harrier. I believe the simulation is more difficult to handle than the 
+    real Harrier, due to less stability and poorer awareness of your attitude. 
+  Taxiing: 
+    Aircraft are often quite clumsy on the ground, so high-speed taxiing can be 
+    a challenge. 
+  Strafing the tower: 
+    Check your aim by switching to tower view immediately after firing. 
+
+
+
+Flight data logging
+For a detailed analysis of your flight, you can record many data parameters. 
+Logging is toggled by the key "SHIFT l". The data are recorded in a file named 
+fdata###.log, with a number increasing for each log created. Data are stored as 
+plain text, and may be loaded into spreadsheets etc. The logging frequency is 
+1Hz. A line is entered with the following data seperated in columns:
+Time (s)
+Aircraft x, y and z coordiantes (m)
+Angular speed around x, y and z axis of aircraft (rad/s)
+Vertical velocity (m/s)
+TAS, IAS (kts)
+Mach number
+Angle of attack and yaw angle (rad)
+Acceleration along x, y and z axis of aircraft (m/s/s)
+
+
+
+Tips for beginners
+There is really no need to make it too difficult for yourself in the beginning. 
+These are the suggested options for a gentle start: 
+Aircraft: MFI-17 Supporter.
+Realism: Wind and realistic propeller engine: Off.
+Graphics: Landscape type: Flat.
+Press "ALT h" to get the head-up display.
+Make sure that you have a quite large field of view, e.g. set the viewing 
+distance to about half of the real value in the graphics menu. 
+
+
+
+Version history
+August 1995: Version 0.10
+First release.
+
+December 1995: Version 0.11
+Fractal landscape added.
+
+More details around the airfield.
+
+Ground forces on wheels calculated in more detail.
+
+Profile drag dependence on flap deflection included.
+
+Some trimming on aircraft models, especially the Harrier.
+
+SVGA graphics drivers removed because of poor performance.
+
+March 1996: Version 0.12
+More detailed rendering, with hidden surface removal.
+
+Air brakes for the jet aircraft.
+
+Quick joystick centering for those of us with a cheap game card.
+
+Vought F4U Crusader, with more graphic detail than previous models.
+
+Machine guns on aircraft.
+
+CCIP gun-sight.
+
+Pause mode.
+
+Position lights on some aircraft.
+
+Status line in external view.
+
+May 1996: Version 0.13
+More detailed rendering of the Harrier and the U-2
+
+July 1996: Version 0.14
+Filled polygons with light source shading for aircraft and landscape. 
+All aircraft are now drawn using polygons. 
+SAAB MFI-17 Supporter added. 
+The generic aircraft models removed. 
+Display of HUD [h] and controls position [j] can be toggled. 
+Clean exit from floating point errors - reboot is still recommended, though. 
+September 1996: Version 0.15
+Video page flipping flicker eliminated. 
+Less time spent on objects and terrain outside the field of view or far away. 
+Undercarriage less hysterical about low calculation frequencies. 
+November 1996: Version 0.16
+First release compiled using djgpp: 
+256 color SVGA graphics. 
+Haze colouring of distant scenery. 
+Gyroscopic precession forces from propeller included. 
+Wind of random direction and strength added. 
+Waypoints with HUD navigation info. 
+Scrolling, zoom-able map. 
+Messages from tower. 
+Ground collision detection improved. 
+Setup files for Thrustmaster FLCS and TQS included. 
+Dots on ground to improve depth perception. 
+Selectable landscape drawing distance. 
+February 1997. Version 0.17
+Nimitz class aircraft carrier: 
+Sails into wind, trying to keep 25kts of wind over deck. 
+Rolls, pitches and heaves depending on wind strength. 
+Maneuvers to avoid land. 
+Detailed arresting wire forces. 
+ILS beacon. 
+"Meatball" with adjustable tilt. 
+Approach indexer 
+Landing Safety Officer is guiding you down by voice. 
+View from LSO station. Select by pressing "Home" 
+Landing grades/score given. 
+Sound support for Sound Blaster compatible cards: 
+Aircraft sounds have doppler frequency change and 
+volume depending on distance. 
+Sampled speech (LSO etc.) 
+Controls: 
+Analog throttle supported. 
+Adjustable null zone. 
+Adjustable noise filter. 
+Nicer menu structure. 
+Control surface deflection decreased to more realistic values. 
+Starting location menu. 
+Wheel rotational momentum added. 
+HUD-modes: 
+Air-air Select by "Enter" 
+Air-ground "Backspace" 
+Navigation "n" 
+ILS "i" 
+HUD on/off Changed to "ALT h" 
+Bugfixes: 
+Scaling factor in gravitational torque corrected. 
+Flaps now updated when swapping planes in mid-flight. 
+FLCS un-pause works without delay. 
+  June 1997. Version 0.18
+  Propeller engine: 
+    Engine torque depending on power, RPM and air density. 
+    Propeller treated as a rotating wing, causing: 
+      Efficiency depending on RPM, flight speed, 
+      propeller pitch and air density. 
+      P-factor. 
+      Propeller slipstream / vortex affecting tail surfaces. 
+      Torque from drag and inertia. 
+    Constant speed propeller, with pitch depending on RPM. 
+    Blade lift and drag calculated from wind tunnel data. 
+    RPM setting handle: 
+      CTRL F1: low RPM CTRL F4: high RPM 
+      CTRL F2: decrease RPM CTRL F3: increase RPM 
+    RPM display. 
+  Flight model: 
+    Angular momentum coupling between axes. 
+    Induced drag calculations more detailed. Adverse yaw stronger. 
+    Side-slipping forces stronger. 
+    F-104: Landing speed lowered to 180 kts, AoA 7.4 deg. 
+    F4U: "Toe-out" on gear for better ground handling. 
+    F4U: Approach AoA lowered to 5.0 deg. 
+    Anti-bounce kludge: Toggleable from Realism menu, this will make control 
+    easier when turned on. But it has no real-world equivalent. 
+  Control surfaces: 
+    Limited actuator speed. 
+    Rudder auto-coordination option. 
+    Rudder trim: left: ( right: ) 
+    Aileron trim: left: { right: } 
+  Graphics: 
+    Animated graphics of: 
+      Control surfaces, flaps, brakes, landing gear and propeller. 
+    Analog instruments: 
+      Turn & slip indicator. 
+      RPM dial. 
+      Altimeter. 
+    HUD: 
+      "nose-pointer" added. 
+      AoA display added. 
+    Trim position indicators. 
+    Vector graphics mode removed. 
+  Sound: 
+    Slight changes to LSO comms. 
+    Stall horn added. 
+    Menu for setting speech, engine and miscellaneous sound volume. 
+    "-nosound" option for people with incompatible hardware. 
+  Misc: 
+    More reasonable wind directions when using RWY 00. 
+    LSO wave-off limit and landing grades tweaked. 
+    Documentation in HTML format. 
+    Anti-flicker delay no longer needed. 
+  Bugfixes: 
+    Angular inertia of right size - it was too small before. 
+    Polygons filling the entire screen are now (mostly) drawn. 
+    LSO altitude instructions corrected. 
+  September 1997. Version 0.19
+  Sound: 
+    Speech samples of higher quality contributed by Edward G. Kinateder (LSO 
+    voice) and Mac McAuley (pilot voice). 
+  Flight model: 
+    F-14A Tomcat added, with: 
+      Variable geometry wings and glove vanes, sweep set from Mach number. 
+      Auto-throttle, toggle by pressing "t". 
+      "Direct Lift Control" spoiler manipulation. Increase lift by pressing "q", 
+      decrease by "a". 
+      Roll control using taileron and differential spoilers. 
+    Undercarriage cannot be lowered while on ground. 
+    Gear-up landings improved. 
+    Engine failures possible. Press "F" to get one within the next minute. 
+    Wing C_p location depends on flap deflection. 
+    Air temperature depends on altitude. 
+    Location of center of pressure and gravity adjusted for less pitch and yaw 
+    stability, decreasing "nose bounce". 
+    Control surface gain adjusted. 
+    Approach speed and AoA adjusted. 
+    Anti-bounce kludge removed. 
+  Graphics: 
+    HUD: 
+      Mach number display added. 
+      Auto-throttle and DLC indicators (F-14 only). 
+  Controls: 
+    Linear and exponential controls now have same total stroke. 
+  January 1998. Version 0.20
+  Flight model: 
+    F-14: 
+      Decreased induced drag. 
+      Glove vane servo improved. 
+      Flaps retract at sweep above 55 deg. 
+      Manual sweep mode: 
+        Toggle auto/manual by "s" key. 
+        [F9]: Minimum sweep, 20 deg. 
+        [F10]: Decrease sweep by 5 deg. 
+        [F11]: Increase sweep by 5 deg. 
+        [F12]: Maximum sweep, 68deg. 
+  Propeller engine: 
+    F-4U engine has two-speed auxiliary blower, operated automatically. 
+    F-4U engine has 2:1 reduction gear. 
+    Manifold pressure display. 
+  Graphics: 
+    Night / dusk / day / dawn selection, with dynamically changing light 
+    intensity. 
+    Carrier and runway lights. 
+    1630 stars displayed from the Yale Bright Star Catalogue. Sky orientation 
+    can be set for any time and location. 
+    Wing sweep angle and mode indicator (F-14 only). 
+    HUD: 
+      Monochrome option. Toggle by "ALT h". 
+      Altitude above ground level and "PULL UP" warning are displayed. 
+    Analog instruments: 
+      Artificial horizon 
+      Indicated Airspeed 
+      Vertical Velocity Indicator 
+      ILS needles 
+      Magnetic compass 
+      Accellerometer 
+      Manifold pressure 
+  User interface: 
+    The graphical user interface, MGUI by Vincenzo Morello, is used. Among the 
+    improvements to the menu system are the possibility of selecting aircraft 
+    type before flight, and graphical joystick calibration. 
+    Mouse support re-established. It causes some screen flickering when used. 
+  Bug fix: 
+    Sticky behaviour at 0/180 heading removed. 
+    Auto-throttle now works with HUD off. 
+    Vertical velocity on HUD now of correct size: Ft/sec. 
+  June 1998. Version 0.21
+  Flight model: 
+    New aircraft, called "X-17" for demonstrating work in progress. Introduces 
+    wing dihedral for roll stability and undersized tail fin, making aircraft 
+    prone to "Dutch roll". Has no ailerons or flaps, but is easily steered using 
+    rudder. 
+    Stall angle increased when slats are extended. Makes handling of the F-14 
+    better at high AoA. 
+    Control sensitivity adjusted for each aircraft. 
+  Catapults: 
+    The four catapults can be selected as starting locations, or can be taxied 
+    onto from the deck. Properly equipped aircraft (F-14 only) can then be 
+    launched. 
+  Graphics: 
+    Wind-bag at airfield, turning and inflating according to wind. 
+    Moving jet blast deflectors behind catapults. 
+    Instrument panel display can be toggled by key "SHIFT i". 
+    Padlock view of target or waypoint from cockpit by key "*". 
+    Padlock view of target or waypoint in external view by key "/". 
+    HUD: 
+      In air-to-air mode, a gun "snake" is displayed, and a Lead Computing 
+      Optical Sight pipper for the selected target. 
+      Inside LCOS is a range clock. 
+      Selected target has a box around it, with relative heading and aspect 
+      markers. 
+      To the lower right, target range, closure speed and aspect angle are 
+      displayed. 
+      Number of remaining gun rounds is written at lower left. 
+    Analog instruments: 
+      Delayed response for instruments sensing air pressure: VVI, ALT and IAS 
+      indicators. 
+  Guns: 
+    Only a fraction of the rounds are tracers. 
+    Tracers extinguish after 5 seconds, but all bullets flies for 15 seconds. 
+    Recoil made less prominent. 
+  Targets: 
+    Gunnery practice range at waypoint "TARGETS". 
+    Four circling targets at random speeds, g-loads and altitudes. 
+    One stationary target on surface. 
+    Next target can be selected by key "SHIFT t". 
+  Sound: 
+    Warning message when crash is likely. 
+    Rumble from wheels when rolling. 
+    Catapult launch sound. 
+    Tweaked stall horn. 
+    Sound when hitting or destroying a target. 
+  Source code: 
+    The source code for defining the graphic objects is now available for 
+    downloading. You can design your own objects and load them into the 
+    simulator. 
+  November 1998. Version 0.22
+  Flight model: 
+    Fuel tanks, with selectable starting quantity. 
+    Fuel consumption by jet and propeller engines. 
+    Detailed jet engine model as option: 
+      Thrust depending on Mach number and altitude. 
+      Multi stage afterburners. 
+      Compressor stalls. 
+      Flame-outs. 
+      Wind-milling and air-restarts, key "e". 
+    Trans- and super-sonic drag. 
+    Maximum control surface deflection decreases with increasing airspeed. 
+    F-14 auto-throttle is now governed by AoA, but works poorly. 
+    Restored efficiency of Harrier attitude controls. 
+  Graphics: 
+    Cockpit walls and canopy frames in internal view, although very crude. 
+    Toggle by key "d". Caution: Panning while showing cockpit triggers a bug in 
+    the graphics engine. 
+    Display of aircraft in internal view can be toggled by key "SHIFT d". 
+    Internal cockpit panning. 
+    Smooth / instant panning option. 
+    Analog instruments: 
+      Dual fuel quantity display. 
+      Fuel flow, jet and prop version. 
+      RPM, now also jet version. 
+      Exhaust gas temperature, jet only. 
+      Undercarriage position. 
+    HUD: 
+      Bank indicator. 
+  Sound: 
+    Ball calls include fuel state. 
+    Sounds for afterburner. 
+  Misc: 
+    LSO: 
+      Now only judges airspeed from AoA. 
+      Less eager to wave-off and more generous with grades. 
+    More options saved in config file. 
+  August 2000. Version 0.23
+  Flight model: 
+    North American X-15A-2 added: 
+      Rocket engine w. fuel consumption 
+      Reaction Control System, toggle activation by key "r". 
+      High altitude drop option added. 
+    Dynamic centre-of-gravity calculations corrected. 
+    High altitude atmosphere model more detailed. 
+  Graphics: 
+    Sky darkens with altitude, and stars appear. 
+    Menu-system debugged and tweaked. 
+    AoA chevron colours swapped to correct order. 
+  Sound: 
+    Rocket engine sound added. 
+  Misc: 
+    Larger fraction of source code released. 
+    Black screen startup pause on some systems is removed. 
+    Jet fuel flow indicator now shows zero when out of fuel. 
+    Auto-throttle debug info removed. 
+  September 2001. Version 0.24
+  Flight model: 
+    Grumman Lunar Module added: 
+      Highly detailed descent module graphics made by H. Frik. 
+    More detailed rocket engine model: 
+      General orientation. 
+      Non-zero idle thrust. 
+      Fuel flow toggle by key "e". 
+      Auto throttle (key "T") for Lunar Module. 
+  Scenario: 
+    Moon scenario added: 
+      Grey landscape with mountains and "seas". 
+      No atmosphere and reduced gravity. 
+      "On surface" and "Low Gate" starting locations. 
+  Graphics: 
+    Solar position on the sky depends on time and geographic latitude. 
+    Contrast of illumination depends on atmospheric pressure. 
+    A few custom colours for aircraft, in stead of the fixed pallette. 
+  Sound: 
+    Radio communications for the Apollo 11 mission added. 
+  Misc: 
+    Complete source code released. 
+    Engineering mode, key "E" for more panning and zooming freedom. 
+  September 2001. Version 0.24.1
+  Maintenance release 
+  Graphics: 
+    Page flipping works again when using the mouse. 
+  Misc: 
+    Source made compatible with LibGRX 2.4.3. 
+March 2002. Version 0.25
+  Flight data logging to text file can be toggled by key "SHIFT-l" 
+  Vertical keypad panning reversed when in cockpit 
+  Keypad 5 restores forward view 
+  Source made compatible with Allegro 4.0 
+Latest version: April 2002. Version 0.26
+  First functional release for the Linux environment. 
+    Runs in window under X11 or full screen in console 
+    Joystick input is missing, though. 
+  Using Allegro for graphics and input. LibGRX is abandoned. 
+  Using CGUI for menues. MGUI is abandoned. 
+  Easier program installation in DOS/Windows. 
+  Trim keys moved. 
+    Use SHIFT plus arrow keys for elevator and aileron trim. 
+    Use ALT plus left/right arrow keys for rudder trim. 
+  Bugfixes: 
+    Corrected throttle position when swapping planes and starting. 
+    No more flameout when swapping from prop to jet plane. 
+    And more... 
+
+
+
+Known bugs
+Some of these are:
+* The joystick calibration routine messes up timing - better to exit the program 
+after calibrating. * Panning inside cockpit while displaying internal cockpit 
+graphics triggers a bug in the graphics engine. This especially happens if 
+smooth panning is enabled and the "viewing distance" in the graphics menu is 
+large.
+* Some parts of the HUD does not scale correctly to the screen dimension data 
+you enter. 
+* Occasional overflow or divide by zero halts, especially when you are 
+stationary on the ground.
+* Objects that are supposed to be hidden behind a hill are often drawn.
+
+Many more bugs are suspected. De-bugging is slow and pain-staking, partly due to 
+my messy programming. Also, adding new features (and bugs!) is much more fun, so 
+expect many bugs to appear. Bug reports are always welcome. Make them as 
+detailed as possible. 
+
+
+
+Updating
+The most recent version can be fetched via WWW at 
+http://www.astro.ku.dk/~norup/vertigo/vertigo.html. 
+Deadline for next update:
+I have no idea. Don't hold your breath for it! 
+When you upgrade, you may just as well delete the entire old vertigo directory, 
+to avoid unused files and a conflict with the old configuration file. 
+
+
+
+Distribution
+The Vertigo binaries are distributed as freeware.
+This means that the program is distributed free of charge. It may not be sold in 
+any form. Vertigo may only be distributed as the original zipped archive 
+containing the files listed in the installation section. 
+The source code for Vertigo is available for downloading. These sources are 
+distributed under the GNU General Public License for free software. Read the 
+license file included in the source package for further details. 
+
+
+
+Troubleshooting
+If Vertigo halts because of an error before you are able to go to the main menu, 
+you can force Vertigo to re-configure by deleting the VER_CNF.GCC file manually.
+Further instructions are found in INSTALL.TXT 
+
+
+Home-built flight simulators
+Please visit my on-line listing of these. 
+
+
+About the author
+I have been hooked on flight as long as I can remember, and spent a significant 
+part of my childhood tossing paper planes and the like. 
+In 1986, I entered the Royal Danish Air Force in an attempt to become a fighter 
+pilot. After ten months of training, including 18 hours in the Saab T-17 
+Supporter, the instructors and I agreed, that I did not have the "magic touch". 
+Afterwards I started studying physics and computer science, specializing in 
+astronomy, and have now got my MSc degree at the University of Aarhus, Denmark. 
+Currently, I am at the Copenhagen University Observatory, working on 
+instrumentation for astronomical telescopes. 
+I have crashed a couple radio-controlled model aircraft beyond worthwhile 
+repair, and still have a semi-scale model of the Saab Supporter, that flies all 
+too rare. Now I am mostly playing with electrically powered flying wings, which 
+are great fun. 
+In the spring of 1997, I have joined a soaring club, the Flyvestation Værløse 
+Svæveflyveklub. If you think, the Vertigo releases are occurring less frequently 
+now, you got the reason here. The real thing is more fun than tampering with a 
+simulation. 
+
+
+
+Why is the simulator called "Vertigo"?
+Several companies use the name "Vertigo" for a product, so why don't I choose a 
+more original name that fits the simulator better? 
+Well, I like the name for two reasons:
+The spatial disorientation experienced by pilots under IFR conditions is even 
+more pronounced in simulators, due to the extremely limited field of view and 
+lack of feed-back from e.g. accelerations.
+The name also is a good description of the confusion that characterizes the 
+creation of the simulator. I have just put in what ever I felt like doing, and 
+there is no real theme. 
+
+
+
+How can YOU help making Vertigo better?
+Making a complete flight simulator is a big job, and I am happy to get any help 
+you can offer. As of version 0.24, all of the source code has been released, 
+making it possible for you to make modifications and extensions to the program. 
+Download the source code and read the accompanying documentation for more 
+details. Here are some suggestions for areas where you can help: 
+  You could: 
+  Design some nice graphic objects to be included in the simulator, by adding to 
+  the distributed source code. For instance, you could make aircraft, ships, 
+  buildings, cars,... 
+  Make an object designer program that is easier to use than putting the numbers 
+  directly into the source code. 
+  Make a converter from your favourite 3D editor format to my format. 
+  Provide sound samples replacing the current ones, as some of these may be 
+  violating copyrights. Or provide nice samples for future extensions of the 
+  sound. 
+  Provide documentation on aircraft performance, aerodynamics, engines, carrier 
+  operations, and other details that could help make the simulator more 
+  accurate. 
+Please note, that whatever you contribute, I have no obligation to include it in 
+the official release of the simulator. 
+
+
+Credits
+The joystick reading routine has been copied and modified from Eyal Lebedinsky's 
+FLY8 simulator. 
+From version 0.16, the DJGPP compiler is used. DJGPP is a MS-DOS port of the GNU 
+gcc compiler. The port is done by DJ Delorie and friends. It is distributed from 
+http://www.delorie.com. 
+Shawn Hargreaves' "Allegro" library is used for graphics, sound, key/mouse input 
+and timing. Allegro has great cross-platform support. It is distributed from 
+http://www.talula.demon.co.uk/allegro/ 
+In version 0.26, the graphical user interface "CGUI" by Christer Sandberg is 
+used. It can be found at http://www.idt.mdh.se/~csg/cgui/ 
+MGUI by Vincenzo Morello, was used from version 0.20 to 0.25. The code is still 
+present in Vertigo, but it is not updated for later versions. Get it at 
+http://web.tiscali.it/morello/MGui/index.html. 
+Some lift and drag coefficients are derived from wind tunnel data provided by L. 
+Lazauskas. 
+I got a lot of neat data on the F4U from Jerry "Zman" Zollman and Greg 
+O'Sullivan. "Zeno" also have put some goodies on his page: 
+http://www.zenoswarbirdvideos.com/. 
+LSO samples are made by Edward G. Kinateder with assistance from Mac McAuley. 
+Thanks to Jouni Raitamaki for providing jet engine data. 
+Thanks to H. Frik for making the beautiful graphics for the Lunar Module descent 
+stage. He also provided lots of data and sound files for the LM simulation. 
+Thanks to A. Lamprou for bug reports. 
+
+
+
+Feedback
+Comments on Vertigo are appreciated. Send them to: 
+Anton Norup Sørensen
+e-mail: a_norup@post.tele.dk
+http://www.astro.ku.dk/~norup/ 

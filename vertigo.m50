@@ -1,0 +1,77 @@
+REM  MACRO Definition for Vertigo v.0.21
+
+~ษออออออออออออป
+~บView controlบ
+~ศออออออออออออผ
+Front_View   = /N UAROW
+Rear_View    = /N DAROW
+Left_View    = /N LAROW
+Right_View   = /N RAROW
+
+Zoom_Ext_In  = KP+
+Zoom_Ext_Out = KP-
+
+LSO_Tow_View = /N HOME
+Extern_View  = /N INS
+Trail_View   = /N END
+Intern_target_padlock = /N  KP*
+Extern_target_padlock =  /N KP/
+
+Pan_Left     = 4
+Pan_Right    = 6
+Pan_Up       = 8
+Pan_Down     = 2
+~ษออออออออออออออป
+~บFlight controlบ
+~ศออออออออออออออผ
+Extend_Airbrake = /P /N shf b /R /N ALT b
+Retract_Airbrake = /N ALT b
+
+Gear = /N g
+
+Whl_Brake = w
+
+Hook = /N h
+
+Rudder_Right = c
+Rudder_Center = x
+Rudder_Left = z
+
+Flap_Raise = F5
+Flap_Lower = F8
+REM Elevator trim may not function with some non-US keyboard layouts
+Trim_Elev_Up = [
+Trim_Elev_Down = ]
+Trim_Ailer_Left = SHF [
+Trim_Ailer_Right = SHF ]
+Trim_Rudd_Left = SHF 9
+Trim_Rudd_Right = SHF 0
+DLC_Increase = q
+DLC_Decrease = a
+
+~ษออออออออออออป
+~บ  Throttle  บ
+~ศออออออออออออผ
+@Digital_CON = THR 1 20 1 F3 F2 F3 F2 F3 F2
+Throttle_Idle = /N F1
+Auto_Throttle_On/OFF = /N t
+
+~ษออออออออออป
+~บNavigationบ
+~ศออออออออออผ
+Next_Way = /N SHF w
+Prev_way = /N ALT w
+Show_Map = /N m
+ILS_mode = /N i
+Nav_mode = /N n
+A-A_mode = /N ENT
+A-G_mode = /N BSP
+Next_Tgt = /N SHF t
+~
+~ษอออออออออออออป
+~บMiscellaneousบ
+~ศอออออออออออออผ
+HUD_On/Off = /N ALT h
+Instruments_On/Off = /N SHF i
+Pause_Game = /N p
+Snapshot = /N SHF ALT e
