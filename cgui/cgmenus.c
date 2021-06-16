@@ -183,7 +183,7 @@ void catch_edit_geom(void *data) {
     if (cvdist < 10) cvdist = 10;
     if (cvdist > 500) cvdist = 500;
     if (cdraw_dist <  4) cdraw_dist =  4;
-    if (cdraw_dist > 10) cdraw_dist = 10;
+    //if (cdraw_dist > 10) cdraw_dist = 10;
     if (cncalc <   1) cncalc =   1;
     if (cncalc > 100) cncalc = 100;
     if (clatitude < -90) clatitude = -90;

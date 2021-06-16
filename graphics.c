@@ -775,9 +775,9 @@ short find_ground_color(float lighting, float dist, short gnd_col)
 
 void draw_poly_map()
 {
- #define poly_grid 10
+ #define poly_grid 100
  #define poly_mask 1000
- #define cos_diag_num 10
+ #define cos_diag_num 100
  typedef struct {
          cartvektor pos;
          int        drawn;
@@ -791,18 +791,10 @@ void draw_poly_map()
  cartvektor edge1,edge2,normvector,view;
  mapvertex poly_map[poly_grid*2+2][poly_grid*2+2];
  int cos_diag_idx;
- float cos_diag_modif[cos_diag_num]={
-                          0.0,
-                          0.1,
-                          0.2,
-                          0.3,
-                          0.4,
-                          0.5,
-                          0.6,
-                          0.7,
-                          0.8,
-                          0.9
-                          };
+ float cos_diag_modif[cos_diag_num];
+ for (int i=0; i<cos_diag_num; i++) {
+  cos_diag_modif[i] = 0.1 * i;
+ }
 
  #ifdef TIMESTAT
    clock_start(7);
