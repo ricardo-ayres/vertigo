@@ -197,7 +197,14 @@ void catch_edit_geom(void *data) {
 
 void graphics_setup_window(void *data) {
 
-  static const char *gfxmode_strs[] = {"640x480", "800x600", "1024x768"}; 
+  static const char *gfxmode_strs[] = {
+    "640x480",
+    "800x600",
+    "1024x768",
+    "1366x768",
+    "1440x900",
+    "1920x1080",
+    };
   //gfxmode_strs must comply with the definitions in config.h
   static int id, id2, id3, id4, id5, id6, id7;
   static t_stdata st_data;
@@ -207,8 +214,8 @@ void graphics_setup_window(void *data) {
   grares = graphmode;
   if (StartUp) {
     AddTag(DOWNLEFT,"");
-    id = AddDropDownS(DOWNLEFT, 0, "~Graphics resolution ", &grares, gfxmode_strs, 3);
-    HookSpinButtons(id, &grares, 1, 1, 0, 2);
+    id = AddDropDownS(DOWNLEFT, 0, "~Graphics resolution ", &grares, gfxmode_strs, 6);
+    HookSpinButtons(id, &grares, 1, 1, 0, 5);
     AddTag(DOWNLEFT,"");
   }
 
@@ -1054,6 +1061,9 @@ int main_menu_cgui(bool startup) {
       case  R640X480: scx =  640; scy = 480; refresh =  0; break;
       case  R800X600: scx =  800; scy = 600; refresh =  0; break;
       case R1024X768: scx = 1024; scy = 768; refresh = 70; break;
+      case R1366X768: scx = 1366; scy = 768; refresh = 70; break;
+      case R1440X900: scx = 1440; scy = 900; refresh = 70; break;
+      case R1920X1080: scx = 1920; scy = 1080; refresh = 70; break;
     }
 
     request_refresh_rate(refresh);

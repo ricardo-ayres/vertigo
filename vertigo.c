@@ -508,6 +508,9 @@ int setup_graph()
    case  R640X480: scx =  640; scy = 480; break;
    case  R800X600: scx =  800; scy = 600; break;
    case R1024X768: scx = 1024; scy = 768; break;
+   case R1366X768: scx = 1366; scy = 768; break;
+   case R1440X900: scx = 1440; scy = 900; break;
+   case R1920X1080: scx = 1920; scy = 1080; break;
  }
 
  if (set_gfx_mode(GFX_AUTODETECT, scx, scy, 0, 2*scy) != 0) {
