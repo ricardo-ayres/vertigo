@@ -1412,13 +1412,9 @@ int main(int argc, char *argv[])
 {
  int i;
 
- /* DISABLE SOUND UNTIL FIXED */
- set_nosound();
- /*
  for (i=1; i<argc; i++) {
    if (!strcmp(argv[i],"-nosound")) set_nosound();
  }
- */
 
  init();
 
