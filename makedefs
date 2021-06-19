@@ -109,7 +109,7 @@ else
  endif
 
  ifeq ($(GRAPHTYPE),X11)
-  LIBG   = $(CGUIPATH)/obj/unix/cgui/datedit.o $(SYS_LIBS) -lm -L/usr/X11R6/lib -lX11
+  LIBG   = $(SYS_LIBS) -lm -L/usr/X11R6/lib -lX11
  else
   LIBG   = /x/home/norup/vertigo/cgui/obj/djgpp/tools/datedit.o -lm -lvga $(SYS_LIBS)
  endif
