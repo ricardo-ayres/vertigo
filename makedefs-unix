@@ -1,0 +1,47 @@
+#Makefile for compiling Vertigo using DOS/djgpp or Linux/gcc
+
+LINUX = TRUE
+DEFSYS = -DLINUX=$(LINUX) -D$(GUI)=TRUE
+GUI = CGUI
+GRAPHTYPE = X11
+LIBTYPE = STATIC
+
+# Allegro
+ALLEGRO = ../allegro
+ALLEGRO_HEADERS = -I$(ALLEGRO)/include
+ALLEGRO_LIB = `$(ALLEGRO)/bin/allegro-config --libs --static`
+
+# CGUI
+CGUIPATH = ../cgui
+CGUI_HEADERS = -I$(CGUIPATH)/include
+CGUI_LIB = -L$(CGUIPATH)/lib/unix -l:libcgui_s.a
+
+CC = gcc
+
+# High performance 
+OPTFLAGS = -O2 -ffast-math -fomit-frame-pointer
+
+WARNFLAGS = -Wall
+
+# Normal compilation
+CFLAGS = $(CGUI_HEADERS) $(ALLEGRO_HEADERS)
+
+# Normal stripped
+LINKFLAGS = -s -Lobjects
+
+# Linux
+DELCMD  = rm -f
+EXE     =
+MAKE    = make
+
+VERSION = 0.26
+EXEDIR = vertigo-$(VERSION)
+EXEFILES = $(PROGRAM) install.txt keys.txt license.txt vertigo.txt *.dat
+
+PROGRAM = Xvertigo
+
+SYS_LIBS    = $(CGUI_LIB) $(ALLEGRO_LIB) 
+SYS_OBJECTS = cgmenus.o
+SYS_HEADERS = cgui/cgmenus.h
+
+LIBG   = $(SYS_LIBS) -lm -L/usr/X11R6/lib -lX11
