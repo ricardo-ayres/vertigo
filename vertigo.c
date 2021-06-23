@@ -679,12 +679,26 @@ void load_object_pos()
 {
  FILE *fp;
  char string[80];
+ char draw_now = 0;
 
  if ((fp=fopen("objects/objects.pos","r")) == NULL)
         errormessage("Cannot open file: OBJECTS/OBJECTS.POS\n\r");
 
- fscanf(fp,"%s", string);
- while(!feof(fp)) {
+ while(fgets(&string, sizeof(string), fp)) {
+
+    if (sscanf(string, "%d %f %f %f %f %d",
+               &file_objectpos[nobjectpos].object,
+               &file_objectpos[nobjectpos].pos.x,
+               &file_objectpos[nobjectpos].pos.y,
+               &file_objectpos[nobjectpos].pos.z,
+               &file_objectpos[nobjectpos].rot,
+               &draw_now) == 7) {
+       file_objectpos[nobjectpos].draw_now = (bool) draw_now;
+       nobjectpos++;
+    }
+
+/* dear god */
+/*
        if (string[0]=='#') {
          bool endfound = false;
          char ch;
@@ -719,7 +733,6 @@ void load_object_pos()
          }
          else errormessage("Error in file format: OBJECTS/OBJECTS.POS\n\r");
 
-/*
          sprintf(string, "%d %f %f %f %f %d",
                file_objectpos[nobjectpos].object,
                file_objectpos[nobjectpos].pos.x,
@@ -728,10 +741,11 @@ void load_object_pos()
                file_objectpos[nobjectpos].rot,
                file_objectpos[nobjectpos].draw_now);
          warningmessage(string);
-*/
          nobjectpos++;
        }
        fscanf(fp,"%s", string);
+ */
+
  }
  fclose(fp);
 }
