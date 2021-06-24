@@ -679,7 +679,7 @@ void load_object_pos()
 {
  FILE *fp;
  char string[80];
- char draw_now = 0;
+ int draw_now = 0;
 
  if ((fp=fopen("objects/objects.pos","r")) == NULL)
         errormessage("Cannot open file: OBJECTS/OBJECTS.POS\n\r");
@@ -692,7 +692,7 @@ void load_object_pos()
                &file_objectpos[nobjectpos].pos.y,
                &file_objectpos[nobjectpos].pos.z,
                &file_objectpos[nobjectpos].rot,
-               &draw_now) == 7) {
+               &draw_now) == 6) {
        file_objectpos[nobjectpos].draw_now = (bool) draw_now;
        nobjectpos++;
     }
